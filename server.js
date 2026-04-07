@@ -1108,6 +1108,24 @@ app.post('/admin/enquiries/:id/status', async (req, res) => {
 
 app.get('/about', (req, res) => res.render('about'));
 
+// Chatbot ke liye Data API Route
+app.get('/api/site-data', async (req, res) => {
+    try {
+        const products = await Product.find({});
+        // Agar gold price ka model nahi banaya hai, toh is line ko hata dena ya hardcode kar dena
+        // const goldPrice = await GoldPrice.findOne().sort({ updatedAt: -1 }); 
+        
+        res.json({
+            storeName: "Shree Mahalakshmi Jewellers",
+            description: "A premium jewellery store offering Gold, Silver, and Custom Designs.",
+            liveGoldPrice: "Contact for today's live rate", // Ya goldPrice variable use karo
+            availableProducts: products.map(p => ({ name: p.name, category: p.category, price: p.price })),
+            contact: "support.smjewellers@gmail.com"
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Data not available" });
+    }
+});
 // --- SERVER START ---
 app.listen(PORT, () => {
     console.log(`Server start  http://localhost:${PORT}`);

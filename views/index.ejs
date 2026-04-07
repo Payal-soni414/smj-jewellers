@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shree Mahalakshmi Jewellers</title>
-    <link rel="icon" type="image/png" href="/images/favicon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
@@ -21,7 +20,7 @@
         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
     </div>
     <div class="carousel-inner">
-        <div class="carousel-item active" style="height: 85vh; background: url('/images/slider1.png') center/cover;">
+        <div class="carousel-item active slider-img-bg" style="background-image: url('/images/slider1.png');">
             <div style="position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.5);"></div>
             <div class="container h-100 d-flex flex-column align-items-center justify-content-center text-center position-relative px-3" style="z-index: 2;">
                 <h3 class="text-warning mb-2 mb-md-3 fs-5 fs-md-3" style="letter-spacing: 3px; font-family: serif;">WELCOME TO</h3>
@@ -30,7 +29,7 @@
                 <a href="/gold" class="btn rounded-pill px-4 px-md-5 py-2 py-md-3 fw-bold custom-hero-btn" style="background-color: #d4af37; color: white; transition: 0.3s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);">Explore Collection</a>
             </div>
         </div>
-        <div class="carousel-item" style="height: 85vh; background: url('/images/slider2.jpg') center/cover;">
+        <div class="carousel-item slider-img-bg" style="background-image: url('/images/slider2.jpg');">
             <div style="position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.4);"></div>
             <div class="container h-100 d-flex flex-column align-items-center justify-content-center text-center position-relative px-3" style="z-index: 2;">
                 <h1 class="text-white fw-bold mb-3 hero-title">Royal Collection</h1>
@@ -38,7 +37,7 @@
                 <a href="/gold" class="btn btn-outline-light rounded-pill px-4 px-md-5 py-2 py-md-3 fw-bold border-2">Shop Bridal</a>
             </div>
         </div>
-        <div class="carousel-item" style="height: 85vh; background: url('/images/slider3.jpg') center/cover;">
+        <div class="carousel-item slider-img-bg" style="background-image: url('/images/slider3.jpg');">
             <div style="position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.5);"></div>
             <div class="container h-100 d-flex flex-column align-items-center justify-content-center text-center position-relative px-3" style="z-index: 2;">
                 <h1 class="text-white fw-bold mb-3 hero-title">Premium Silver</h1>
@@ -46,7 +45,7 @@
                 <a href="/silver" class="btn btn-outline-light rounded-pill px-4 px-md-5 py-2 py-md-3 fw-bold border-2">View More</a>
             </div>
         </div>
-        <div class="carousel-item" style="height: 85vh; background: url('/images/slider4.jpg') center/cover;">
+        <div class="carousel-item slider-img-bg" style="background-image: url('/images/slider4.jpg');">
             <div style="position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.5);"></div>
             <div class="container h-100 d-flex flex-column align-items-center justify-content-center text-center position-relative px-3" style="z-index: 2;">
                 <h1 class="text-white fw-bold mb-3 hero-title">Exquisite Artificial Range</h1>
@@ -211,20 +210,32 @@
 </section>
 
 <style>
+    /* Nayi class mobile me slider images theek karne ke liye */
+    .slider-img-bg {
+        height: 55vh; /* Mobile height */
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
     .hero-title { font-size: 2.2rem; }
     .collection-title { font-size: 1.8rem; }
     .video-title { font-size: 1.8rem; }
     .gold-img { height: 350px; object-fit: cover; }
     .sub-img { height: 220px; object-fit: cover; }
+
     @media (min-width: 768px) {
+        .slider-img-bg { height: 85vh; /* Desktop height */ }
         .hero-title { font-size: 4rem; }
         .collection-title { font-size: 2.8rem; }
         .video-title { font-size: 3rem; }
     }
+    
     @media (min-width: 992px) {
         .gold-img { height: 624px; }
         .sub-img { height: 300px; }
     }
+
     .collection-card { cursor: pointer; transition: 0.3s; }
     .collection-img { transition: transform 0.6s ease; }
     .collection-card:hover .collection-img { transform: scale(1.05); }
