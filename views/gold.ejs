@@ -127,13 +127,27 @@
                 <% } %>
             </div>
             
-            <nav class="mt-5">
-                <ul class="pagination justify-content-center flex-wrap">
-                    <li class="page-item disabled"><a class="page-link shadow-sm" href="#">Previous</a></li>
-                    <li class="page-item active"><a class="page-link bg-dark border-dark shadow-sm" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link text-dark shadow-sm" href="#">Next</a></li>
-                </ul>
-            </nav>
+           <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center flex-wrap">
+            
+            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                <a class="page-link shadow-sm" href="?page=<%= currentPage - 1 %>">Previous</a>
+            </li>
+            
+            <% for(let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                    <a class="page-link <%= currentPage === i ? 'bg-dark border-dark text-white' : 'text-dark' %> shadow-sm" href="?page=<%= i %>"><%= i %></a>
+                </li>
+            <% } %>
+            
+            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                <a class="page-link text-dark shadow-sm" href="?page=<%= currentPage + 1 %>">Next</a>
+            </li>
+            
+        </ul>
+    </nav>
+<% } %>
         </div>
     </div>
 </div>

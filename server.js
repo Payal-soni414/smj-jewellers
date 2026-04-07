@@ -341,7 +341,21 @@ app.get('/gold', async (req, res) => {
         if (sortFilter === 'lowToHigh') productsWithPrice.sort((a, b) => a.calculatedPrice - b.calculatedPrice);
         else if (sortFilter === 'highToLow') productsWithPrice.sort((a, b) => b.calculatedPrice - a.calculatedPrice);
 
-        res.render('gold', { products: productsWithPrice });
+        // --- PAGINATION LOGIC START ---
+        const page = parseInt(req.query.page) || 1; // कस्टमर अभी किस पेज पर है? (Default: 1)
+        const limit = 12; // 1 पेज पर 12 फोटो
+        const totalItems = productsWithPrice.length; // फिल्टर होने के बाद टोटल कितनी फोटो बचीं?
+        const totalPages = Math.ceil(totalItems / limit) || 1; // टोटल कितने पेज बनेंगे?
+
+        const skip = (page - 1) * limit;
+        const paginatedProducts = productsWithPrice.slice(skip, skip + limit); // सिर्फ 12 फोटो काटो
+        // --- PAGINATION LOGIC END ---
+
+        res.render('gold', { 
+            products: paginatedProducts, 
+            currentPage: page, 
+            totalPages: totalPages 
+        });
     } catch (err) { res.status(500).send("Error"); }
 });
 
@@ -370,7 +384,21 @@ app.get('/silver', async (req, res) => {
         if (sortFilter === 'lowToHigh') productsWithPrice.sort((a, b) => a.calculatedPrice - b.calculatedPrice);
         else if (sortFilter === 'highToLow') productsWithPrice.sort((a, b) => b.calculatedPrice - a.calculatedPrice);
 
-        res.render('silver', { products: productsWithPrice });
+        // --- PAGINATION LOGIC START ---
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 12; 
+        const totalItems = productsWithPrice.length; 
+        const totalPages = Math.ceil(totalItems / limit) || 1; 
+
+        const skip = (page - 1) * limit;
+        const paginatedProducts = productsWithPrice.slice(skip, skip + limit); 
+        // --- PAGINATION LOGIC END ---
+
+        res.render('silver', { 
+            products: paginatedProducts,
+            currentPage: page, 
+            totalPages: totalPages 
+        });
     } catch (err) { res.status(500).send("Error"); }
 });
 
@@ -398,7 +426,21 @@ app.get('/artificial', async (req, res) => {
         if (sortFilter === 'lowToHigh') productsWithPrice.sort((a, b) => a.calculatedPrice - b.calculatedPrice);
         else if (sortFilter === 'highToLow') productsWithPrice.sort((a, b) => b.calculatedPrice - a.calculatedPrice);
 
-        res.render('artificial', { products: productsWithPrice });
+        // --- PAGINATION LOGIC START ---
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 12; 
+        const totalItems = productsWithPrice.length; 
+        const totalPages = Math.ceil(totalItems / limit) || 1; 
+
+        const skip = (page - 1) * limit;
+        const paginatedProducts = productsWithPrice.slice(skip, skip + limit); 
+        // --- PAGINATION LOGIC END ---
+
+        res.render('artificial', { 
+            products: paginatedProducts,
+            currentPage: page, 
+            totalPages: totalPages 
+        });
     } catch (err) { res.status(500).send("Error"); }
 });
 
