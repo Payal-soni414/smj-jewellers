@@ -1,0 +1,76 @@
+<%- include('partials/header') %>
+
+<div class="position-relative" style="background: linear-gradient(135deg, #2c3e50, #1a1a1a); padding: 60px 0;">
+    <div class="container text-center px-3">
+        <h1 class="display-4 fw-bold mb-3" style="color: #d4af37;">About Shree Mahalakshmi Jewellers</h1>
+        <p class="lead text-light mb-0 fs-5 fs-md-4" style="opacity: 0.9;">A Journey of Trust, Purity, and Beautiful Relationships.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    
+    <div class="row align-items-center mb-5 pb-4 border-bottom flex-column-reverse flex-lg-row">
+        <div class="col-lg-6 mb-4 mb-lg-0 pe-lg-5 mt-4 mt-lg-0 text-center text-lg-start">
+            <h2 class="fw-bold mb-4" style="color: #2c3e50;">Welcome to Our Store</h2>
+            <p class="text-muted" style="line-height: 1.8; font-size: 1.05rem;">
+                Welcome to <strong>Shree Mahalakshmi Jewellers</strong>. We believe that jewellery is more than just an ornament; it is a beautiful part of your life's most precious memories. We offer a wonderful collection of Gold, Silver, and Artificial jewellery for every special moment.
+            </p>
+            <p class="text-muted" style="line-height: 1.8; font-size: 1.05rem;">
+                Our store is built on the strong foundation of trust and lasting relationships with our customers. When you shop with us, you are not just buying jewellery; you are taking home a promise of purity and genuine quality. We always work hard to bring you the finest designs with complete honesty.
+            </p>
+            <a href="/" class="btn rounded-pill px-4 py-2 mt-3 fw-bold text-dark w-100 w-md-auto" style="background-color: #d4af37;">Explore Collection</a>
+        </div>
+        <div class="col-lg-6 text-center">
+            <img src="/images/about.jpg" class="img-fluid rounded-4 shadow-lg w-100" alt="Shree Mahalakshmi Jewellers" style="max-height: 450px; object-fit: cover;">
+        </div>
+    </div>
+
+    <div class="row text-center mt-5 pt-3">
+        <h3 class="fw-bold mb-5" style="color: #2c3e50;">Why Shop With Us?</h3>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100 p-4 rounded-4 feature-card bg-light">
+                <div class="icon-box mx-auto mb-3 d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="width: 70px; height: 70px;">
+                    <i class="fas fa-handshake fs-3" style="color: #d4af37;"></i>
+                </div>
+                <h5 class="fw-bold text-dark">A Bond of Trust</h5>
+                <p class="text-muted small mb-0">We value the trust you place in us. Every piece in our store is carefully selected to give you the best quality and purity.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100 p-4 rounded-4 feature-card bg-light">
+                <div class="icon-box mx-auto mb-3 d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="width: 70px; height: 70px;">
+                    <i class="fas fa-gem fs-3" style="color: #d4af37;"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Beautiful Designs</h5>
+                <p class="text-muted small mb-0">From simple daily wear to elegant wedding sets, we have a wide range of beautiful designs to match your unique style.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100 p-4 rounded-4 feature-card bg-light">
+                <div class="icon-box mx-auto mb-3 d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm" style="width: 70px; height: 70px;">
+                    <i class="fas fa-heart fs-3" style="color: #d4af37;"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Customer First</h5>
+                <p class="text-muted small mb-0">We love building long-lasting relations with our customers. Your happiness and satisfaction are our biggest achievements.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .feature-card { transition: all 0.3s ease; }
+    .feature-card:hover { transform: translateY(-10px); background-color: #fff !important; box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important; }
+    
+    /* Responsive tweaks for Explore Button */
+    @media (max-width: 768px) {
+        .w-md-auto { width: 100% !important; }
+    }
+    @media (min-width: 769px) {
+        .w-md-auto { width: auto !important; }
+    }
+</style>
+
+<%- include('partials/footer') %>

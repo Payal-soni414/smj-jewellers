@@ -1,0 +1,130 @@
+<%- include('partials/header') %>
+
+<div class="bg-light py-4 border-bottom">
+    <div class="container px-3">
+        <h3 class="fw-bold mb-0 text-uppercase fs-5 fs-md-3">Search Results for: "<span class="text-warning"><%= searchQuery %></span>"</h3>
+        <p class="text-muted mt-2 mb-0"><%= products.length %> items found</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-3 g-md-4">
+        <% if (products && products.length > 0) { %>
+            <% products.forEach(item => { %>
+                <% 
+                    let itemPrice = 0;
+                    if (item.category === 'Gold' && typeof liveRate !== 'undefined' && liveRate.goldRate22K) {
+                        itemPrice = (liveRate.goldRate22K * item.weightInGrams) + item.makingCharges;
+                    } else if (item.category === 'Silver' && typeof liveRate !== 'undefined' && liveRate.silverRate) {
+                        let perGramSilver = liveRate.silverRate / 1000;
+                        itemPrice = (perGramSilver * item.weightInGrams) + item.makingCharges;
+                    } else {
+                        itemPrice = item.makingCharges;
+                    }
+                %>
+                
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="card border-0 shadow-sm h-100 product-card rounded-4 overflow-hidden">
+                        <div class="position-relative">
+                            
+                            <% if (!item.inStock) { %>
+                                <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-3 py-2 shadow-sm" style="z-index: 5;">
+                                    <i class="fas fa-ban me-1"></i> Out of Stock
+                                </span>
+                            <% } %>
+
+                            <% let isLiked = (typeof userWishlist !== 'undefined' && userWishlist.includes(item._id.toString())); %>
+                            <button onclick="toggleWishlist('<%= item._id %>', this)" class="btn btn-light rounded-circle shadow-sm position-absolute top-0 end-0 m-2 border-0" style="z-index: 10; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; transition: 0.3s;">
+                                <i class="<%= isLiked ? 'fas' : 'far' %> fa-heart text-danger"></i>
+                            </button>
+                            
+                            <a href="/product/<%= item._id %>" class="overflow-hidden d-block text-center bg-light">
+                                <img src="<%= item.imagePath %>" class="card-img-top collection-img <%= !item.inStock ? 'opacity-75' : '' %>" alt="<%= item.name %>" style="height: 250px; object-fit: cover;">
+                            </a>
+                            
+                            <span class="position-absolute bottom-0 start-0 m-2 badge bg-dark opacity-75"><%= item.category %></span>
+                        </div>
+                        
+                        <div class="card-body text-center bg-white d-flex flex-column p-3 p-md-4">
+                            <h6 class="card-title fw-bold mb-1 text-truncate">
+                                <a href="/product/<%= item._id %>" class="text-dark text-decoration-none"><%= item.name %></a>
+                            </h6>
+                            
+                            <% if (item.category !== 'Artificial') { %>
+                                <p class="text-muted small mb-1"><%= item.weightInGrams %>g Purity Guaranteed</p>
+                            <% } else { %>
+                                <p class="text-muted small mb-1">Premium Artificial</p>
+                            <% } %>
+                            
+                            <% if (itemPrice > 0) { %>
+                                <h5 class="text-dark fw-bold mb-3 mt-auto">₹ <%= Math.round(itemPrice).toLocaleString('en-IN') %></h5>
+                                
+                                <% if (item.inStock) { %>
+                                    <form action="/cart/add/<%= item._id %>" method="POST" class="mt-auto">
+                                        <button type="submit" class="btn btn-outline-dark btn-sm w-100 rounded-pill fw-bold py-2"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                                    </form>
+                                <% } else { %>
+                                    <div class="mt-auto">
+                                        <button class="btn btn-secondary btn-sm w-100 rounded-pill fw-bold py-2" disabled>
+                                            <i class="fas fa-box-open me-2"></i> Out of Stock
+                                        </button>
+                                    </div>
+                                <% } %>
+                                
+                            <% } else { %>
+                                <p class="text-danger small fw-bold mt-auto"><i class="fas fa-exclamation-triangle me-1"></i>Rate Not Updated</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="col-12 text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-search-minus display-1 text-muted opacity-25"></i>
+                </div>
+                <h4 class="fw-bold text-dark">No products found for "<%= searchQuery %>"</h4>
+                <p class="text-muted px-3">Try searching with different keywords like 'Gold', 'Silver', 'Ring' or 'Necklace'.</p>
+                <a href="/" class="btn btn-warning rounded-pill px-5 py-2 fw-bold text-dark shadow-sm mt-3" style="border: none;">Back to Home</a>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+    .product-card { transition: all 0.3s ease; border: 1px solid #eee !important; }
+    .product-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.12) !important; }
+    .collection-img { transition: transform 0.6s ease; }
+    .product-card:hover .collection-img { transform: scale(1.05); }
+    
+    /* Ensure text doesn't overflow */
+    .text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+<script>
+async function toggleWishlist(productId, btn) {
+    try {
+        const response = await fetch(`/api/wishlist/toggle/${productId}`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        
+        if (data.message === 'login_required') { 
+            window.location.href = '/login'; 
+            return; 
+        }
+
+        if (data.success) {
+            const icon = btn.querySelector('i');
+            
+            // Ab sirf Dil (Heart) laal ya khali hoga, koi number change nahi hoga
+            if (data.action === 'added') {
+                icon.classList.replace('far', 'fas');
+            } else {
+                icon.classList.replace('fas', 'far');
+            }
+        }
+    } catch (err) { console.error(err); }
+}
+</script>
+
+<%- include('partials/footer') %>

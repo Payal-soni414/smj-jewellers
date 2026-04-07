@@ -1,0 +1,109 @@
+<%- include('partials/header') %>
+
+<div class="container py-5 mt-4">
+    <h2 class="fw-bold mb-4 text-center text-md-start" style="color: #2c3e50;">Secure Checkout</h2>
+    
+    <form action="/place-order" method="POST">
+        <div class="row g-4 flex-column-reverse flex-lg-row">
+            
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                    <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="fas fa-map-marker-alt me-2 text-warning"></i> Delivery Address</h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-bold text-muted">Full Name</label>
+                            <input type="text" name="fullName" class="form-control bg-light border-0 py-2" value="<%= user.name %>" required>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-bold text-muted">Mobile Number</label>
+                            <input type="tel" name="phone" class="form-control bg-light border-0 py-2" value="<%= user.mobile %>" pattern="[0-9]{10}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-muted">Street Address / House No.</label>
+                            <input type="text" name="street" class="form-control bg-light border-0 py-2" placeholder="e.g. 123, ABC Colony, Phase 1" required>
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <label class="form-label small fw-bold text-muted">City</label>
+                            <input type="text" name="city" class="form-control bg-light border-0 py-2" placeholder="e.g. Pune" required>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small fw-bold text-muted">State</label>
+                            <input type="text" name="state" class="form-control bg-light border-0 py-2" placeholder="e.g. Maharashtra" required>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <label class="form-label small fw-bold text-muted">Pincode</label>
+                            <input type="text" name="pincode" class="form-control bg-light border-0 py-2" pattern="[0-9]{6}" placeholder="e.g. 411001" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-3 border-bottom pb-2"><i class="fas fa-wallet me-2 text-warning"></i> Payment Method</h5>
+                    
+                    <div class="form-check bg-light p-3 rounded-3 mb-2 border">
+                        <input class="form-check-input ms-1" type="radio" name="paymentMethod" id="cod" value="COD" checked>
+                        <label class="form-check-label ms-2 fw-bold" for="cod">
+                            Cash on Delivery (COD) <i class="fas fa-money-bill-wave text-success ms-2"></i>
+                        </label>
+                    </div>
+                    <div class="form-check bg-light p-3 rounded-3 opacity-50 border">
+                        <input class="form-check-input ms-1" type="radio" name="paymentMethod" id="online" value="Online" disabled>
+                        <label class="form-check-label ms-2 fw-bold text-muted" for="online">
+                            Online Payment (Coming Soon) <i class="fas fa-credit-card ms-2"></i>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-lg-top" style="top: 100px; background-color: #f8f9fa;">
+                    <h5 class="fw-bold mb-4 border-bottom pb-2">Order Summary</h5>
+                    
+                    <% 
+                        let subtotal = 0;
+                        cart.items.forEach(item => { 
+                            if(item.productId) {
+                                let price = item.productId.makingCharges;
+                                if(item.productId.category === 'Gold' && typeof liveRate !== 'undefined') price = (liveRate.goldRate22K * item.productId.weightInGrams) + item.productId.makingCharges;
+                                else if(item.productId.category === 'Silver' && typeof liveRate !== 'undefined') price = ((liveRate.silverRate / 1000) * item.productId.weightInGrams) + item.productId.makingCharges;
+                                subtotal += (price * item.quantity);
+                            }
+                        });
+                        let gst = subtotal * 0.03;
+                        let grandTotal = subtotal + gst;
+                    %>
+
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Subtotal (<%= cartItemCount %> items)</span>
+                        <span class="fw-bold">₹ <%= Math.round(subtotal).toLocaleString('en-IN') %></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Estimated GST (3%)</span>
+                        <span class="fw-bold">₹ <%= Math.round(gst).toLocaleString('en-IN') %></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 small">
+                        <span class="text-muted">Delivery Charges</span>
+                        <span class="fw-bold text-success">FREE</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fw-bold fs-5">Total To Pay</span>
+                        <span class="fw-bold fs-4" style="color: #d4af37;">₹ <%= Math.round(grandTotal).toLocaleString('en-IN') %></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold py-3 shadow-sm" style="background-color: #2c3e50; border: none;">
+                        Place Order <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                    
+                    <p class="text-muted small text-center mt-3 mb-0"><i class="fas fa-shield-alt me-1"></i> Safe & Secure Payments</p>
+                </div>
+            </div>
+            
+        </div>
+    </form>
+</div>
+
+<%- include('partials/footer') %>

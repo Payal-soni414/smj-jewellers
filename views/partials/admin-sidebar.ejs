@@ -1,0 +1,83 @@
+<style>
+    /* Default Desktop Styles */
+    .admin-sidebar { min-width: 250px; min-height: 100vh; }
+    .list-group-item:hover { background-color: rgba(255,255,255,0.1) !important; color: #d4af37 !important; padding-left: 20px; transition: 0.3s; }
+    .w-20px { width: 25px; text-align: center; }
+
+    /* 🔥 Active Link Style (Current Page) 🔥 */
+    .admin-active {
+        background-color: rgba(255,255,255,0.1) !important; 
+        color: #d4af37 !important; 
+        border-left: 4px solid #d4af37 !important;
+    }
+
+    /* 🔥 Mobile & Tablet Responsive Styles for Sidebar 🔥 */
+    @media (max-width: 991.98px) {
+        .admin-sidebar { min-height: auto; width: 100%; border-bottom: 2px solid #d4af37; }
+        .list-group { flex-direction: row; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 10px; margin-top: 0 !important; }
+        .list-group::-webkit-scrollbar { height: 4px; }
+        .list-group::-webkit-scrollbar-thumb { background-color: #d4af37; border-radius: 10px; }
+        
+        .list-group-item { flex: 0 0 auto; border-radius: 10px !important; margin-right: 10px !important; text-align: center; padding: 10px 15px; border: 1px solid rgba(255,255,255,0.1) !important; }
+        .list-group-item:hover { padding-left: 15px !important; } 
+        
+        .w-20px { display: block; margin: 0 auto 5px auto !important; font-size: 1.2rem; }
+        .nav-text { font-size: 0.8rem; }
+        .sidebar-heading { padding: 15px 0 !important; font-size: 1.5rem !important; }
+        
+        /* Mobile Active Style */
+        .admin-active { border-left: 1px solid rgba(255,255,255,0.1) !important; border-bottom: 3px solid #d4af37 !important; }
+    }
+</style>
+
+<div class="bg-dark text-white shadow admin-sidebar" id="sidebar-wrapper">
+    <div class="sidebar-heading text-center py-4 fs-4 fw-bold text-warning border-bottom border-secondary">
+        <i class="fas fa-gem me-2"></i>SMJ ADMIN
+    </div>
+    <div class="list-group list-group-flush my-3 px-2 px-lg-0" id="admin-menu">
+        <a href="/admin" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-tachometer-alt me-2 w-20px"></i><span class="nav-text">Dashboard</span>
+        </a>
+        <a href="/admin/analytics" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-chart-pie me-2 text-warning w-20px"></i><span class="nav-text">Analytics</span>
+        </a>
+        <a href="/admin/manage-products" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-box me-2 w-20px"></i><span class="nav-text">Products</span>
+        </a>
+        <a href="/admin/trending" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-fire me-2 text-warning w-20px"></i><span class="nav-text">Trending</span>
+        </a>
+        <a href="/admin/orders" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-shopping-cart me-2 text-info w-20px"></i><span class="nav-text">Orders</span>
+        </a>
+        <a href="/admin/reviews" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-star me-2 text-warning w-20px"></i><span class="nav-text">Reviews</span>
+        </a>
+        <a href="/admin/custom-orders" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-magic me-2 text-warning w-20px"></i><span class="nav-text">Custom Orders</span>
+        </a>
+        <a href="/admin/subscribers" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-envelope-open-text me-2 text-warning w-20px"></i><span class="nav-text">Newsletter</span>
+        </a>
+        <a href="/admin/enquiries" class="list-group-item list-group-item-action bg-transparent text-white border-0 mt-lg-1">
+            <i class="fas fa-headset me-2 text-warning w-20px"></i><span class="nav-text">Enquiries</span>
+        </a>
+        
+        <a href="/" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold mt-lg-5 border-0">
+            <i class="fas fa-sign-out-alt me-2 w-20px"></i><span class="nav-text">Exit to Store</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let currentUrl = window.location.pathname;
+        let links = document.querySelectorAll("#admin-menu a");
+        
+        links.forEach(link => {
+            if (link.getAttribute("href") === currentUrl) {
+                link.classList.add("admin-active");
+            }
+        });
+    });
+</script>

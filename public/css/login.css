@@ -1,0 +1,57 @@
+/* public/css/login.css */
+
+.login-section {
+    min-height: 80vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+}
+
+.nav-pills .nav-link {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    margin: 0 5px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #2c3e50 !important;
+    color: #ffffff !important;
+    border-color: #2c3e50;
+    box-shadow: 0 4px 10px rgba(44, 62, 80, 0.2);
+}
+
+.input-group-text {
+    border-radius: 20px 0 0 20px;
+}
+
+.form-control {
+    border-radius: 0 20px 20px 0;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #ced4da;
+}
+
+.btn-gold {
+    background-color: #d4af37;
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-gold:hover {
+    background-color: #b5952f;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-dark {
+    transition: 0.3s;
+}
+
+.btn-dark:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(33, 37, 41, 0.3);
+}

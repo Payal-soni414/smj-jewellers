@@ -1,0 +1,139 @@
+<%- include('partials/header') %>
+
+<div class="container pt-3 pt-lg-5 pb-5 mt-lg-3">
+    <div class="row">
+        
+        <div class="col-lg-3 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden sticky-lg-top custom-sticky" style="z-index: 1;">
+                
+                <div class="bg-dark text-white text-center py-4 d-none d-lg-block" style="background-color: #2c3e50 !important;">
+                    <div class="rounded-circle d-inline-flex justify-content-center align-items-center mb-2 shadow" style="width: 85px; height: 85px; background-color: #d4af37; color: #fff; font-size: 40px; font-weight: bold; border: 3px solid rgba(255,255,255,0.2);">
+                        <%= user.name.charAt(0).toUpperCase() %>
+                    </div>
+                    <h5 class="fw-bold mb-0 mt-2 text-truncate px-2"><%= user.name %></h5>
+                    <p class="text-white-50 small mb-0 text-uppercase" style="letter-spacing: 1px;"><%= user.email %></p>
+                </div>
+                
+                <div class="p-2 p-lg-0 bg-white">
+                    <nav class="nav nav-pills flex-row flex-lg-column flex-nowrap overflow-auto custom-nav-scroll gap-2 gap-lg-0">
+                        <a href="/profile" class="nav-link fw-bold text-muted py-2 py-lg-3 px-4 text-nowrap rounded-pill rounded-lg-0 border border-lg-0 bg-light bg-lg-transparent">
+                            <i class="fas fa-user-circle me-2"></i> My Profile
+                        </a>
+                        <a href="/orders" class="nav-link active fw-bold py-2 py-lg-3 px-4 text-nowrap rounded-pill rounded-lg-0 shadow-sm shadow-lg-none" style="background-color: #d4af37; color: white;">
+                            <i class="fas fa-box-open me-2"></i> My Orders
+                        </a>
+                        <a href="/wishlist" class="nav-link fw-bold text-muted py-2 py-lg-3 px-4 text-nowrap rounded-pill rounded-lg-0 border border-lg-0 bg-light bg-lg-transparent">
+                            <i class="fas fa-heart me-2"></i> Wishlist
+                        </a>
+                        <a href="/logout" class="nav-link text-danger fw-bold py-2 py-lg-3 px-4 text-nowrap rounded-pill rounded-lg-0 border border-lg-0 bg-light bg-lg-transparent">
+                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 min-vh-50 h-100">
+                <h4 class="fw-bold mb-3 mb-md-4 text-center text-md-start text-dark">My Order History</h4>
+                <hr class="text-muted mb-4 d-none d-md-block opacity-25">
+                
+                <% if (orders && orders.length > 0) { %>
+                    <% orders.forEach(order => { %>
+                        <div class="card border mb-4 rounded-4 shadow-sm">
+                            
+                            <div class="card-header bg-light border-bottom p-3 p-md-4 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center rounded-top-4 gap-2">
+                                <div>
+                                    <p class="text-muted small mb-0 text-uppercase fw-bold" style="letter-spacing: 0.5px;">Order Placed</p>
+                                    <h6 class="fw-bold mb-0 text-dark"><%= new Date(order.orderDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></h6>
+                                </div>
+                                <div class="text-start text-sm-end">
+                                    <p class="text-muted small mb-0 text-uppercase fw-bold" style="letter-spacing: 0.5px;">Total Amount</p>
+                                    <h6 class="fw-bold mb-0" style="color: #2c3e50;">₹ <%= Math.round(order.totalAmount).toLocaleString('en-IN') %></h6>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body p-3 p-md-4">
+                                <% order.items.forEach(item => { %>
+                                    <% let pId = item.productId ? item.productId.toString() : null; %>
+                                    
+                                    <div class="row align-items-center mb-3">
+                                        
+                                        <div class="col-4 col-sm-2">
+                                            <% if (pId) { %>
+                                                <a href="/product/<%= pId %>" class="d-block overflow-hidden rounded-3 border shadow-sm">
+                                                    <img src="<%= item.productImage %>" class="img-fluid" style="height: 80px; object-fit: cover; width: 100%;">
+                                                </a>
+                                            <% } else { %>
+                                                <div class="overflow-hidden rounded-3 border shadow-sm">
+                                                    <img src="<%= item.productImage %>" class="img-fluid" style="height: 80px; object-fit: cover; width: 100%; opacity: 0.7;">
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                        
+                                        <div class="col-8 col-sm-10">
+                                            <% if (pId) { %>
+                                                <a href="/product/<%= pId %>" class="text-decoration-none text-dark order-item-title">
+                                                    <h5 class="fw-bold mb-1 text-truncate" style="transition: 0.2s;"><%= item.productName %> <i class="fas fa-external-link-alt ms-2 text-primary small" style="font-size: 0.8rem;"></i></h5>
+                                                </a>
+                                            <% } else { %>
+                                                <h5 class="fw-bold mb-1 text-muted text-truncate"><%= item.productName %></h5>
+                                                <span class="badge bg-danger small mb-2">Product Unavailable</span>
+                                            <% } %>
+                                            
+                                            <p class="text-muted mb-0 fw-bold bg-light d-inline-block px-3 py-1 rounded-pill mt-2">Qty: <%= item.quantity %></p>
+                                        </div>
+
+                                    </div>
+                                    <hr class="text-muted opacity-25">
+                                <% }) %>
+                                
+                                <div class="mt-2 text-end">
+                                    <span class="badge 
+                                        <%= order.orderStatus === 'Delivered' ? 'bg-success' : 
+                                            order.orderStatus === 'Shipped' ? 'bg-primary' : 
+                                            order.orderStatus === 'Processing' ? 'bg-warning text-dark' : 'bg-danger' %> 
+                                        px-3 py-2 rounded-pill shadow-sm fs-6">
+                                        <i class="fas fa-truck me-2"></i> Status: <%= order.orderStatus || 'Processing' %>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="text-center py-5 mt-4">
+                        <i class="fas fa-shopping-bag fa-4x text-muted mb-3 opacity-25"></i>
+                        <h4 class="fw-bold text-dark">No Orders Yet</h4>
+                        <p class="small text-muted mb-4">You haven't placed any orders yet. Let's change that!</p>
+                        <a href="/gold" class="btn rounded-pill px-5 py-2 fw-bold shadow-sm text-white custom-shop-btn" style="background-color: #d4af37; border: none; transition: 0.3s;">Shop Now</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* 🔥 Desktop Sticky Offset 🔥 */
+    @media (min-width: 992px) {
+        .custom-sticky { top: 100px; }
+    }
+    @media (max-width: 991px) {
+        .custom-sticky { top: 0 !important; }
+    }
+
+    /* Hover Effects */
+    .order-item-title:hover h5 { color: #d4af37 !important; }
+    .custom-shop-btn:hover { background-color: #b8962e !important; transform: translateY(-2px); }
+
+    /* Custom Scrollbar */
+    .custom-nav-scroll::-webkit-scrollbar { display: none; }
+    .custom-nav-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .nav-link { transition: all 0.3s ease; }
+    .nav-link:not(.active):not(.text-danger):hover { background-color: #f8f9fa; color: #d4af37 !important; }
+</style>
+
+<%- include('partials/footer') %>

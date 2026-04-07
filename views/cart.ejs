@@ -1,0 +1,120 @@
+<%- include('partials/header') %>
+
+<div class="bg-light py-4 border-bottom">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h2 class="fw-bold text-uppercase mb-0 text-center text-sm-start w-100 w-sm-auto" style="color: #2c3e50;">Your Shopping Cart</h2>
+    </div>
+</div>
+
+<div class="container py-5">
+    <% if (cart && cart.items.length > 0) { %>
+        <div class="row">
+            
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4">
+                    <h5 class="fw-bold border-bottom pb-3 mb-4">Cart Items (<%= cart.items.length %>)</h5>
+                    
+                    <% 
+                    let subtotal = 0;
+                    cart.items.forEach(item => { 
+                        let p = item.productId;
+                        
+                        if (!p) return; 
+                        
+                        let itemPrice = 0;
+
+                        if (p.category === 'Gold') {
+                            itemPrice = ((rate.goldRate22K || 0) * p.weightInGrams) + p.makingCharges;
+                        } else if (p.category === 'Silver') {
+                            itemPrice = (((rate.silverRate || 0) / 1000) * p.weightInGrams) + p.makingCharges;
+                        } else {
+                            itemPrice = p.makingCharges; 
+                        }
+                        
+                        let itemTotal = itemPrice * item.quantity;
+                        subtotal += itemTotal;
+                    %>
+                        <div class="row align-items-center mb-4 pb-3 border-bottom g-3">
+                            
+                            <div class="col-4 col-sm-3 col-md-2">
+                                <img src="<%= p.imagePath %>" class="img-fluid rounded-3 shadow-sm" alt="<%= p.name %>" style="object-fit: cover; height: 80px; width: 100%;">
+                            </div>
+                            
+                            <div class="col-8 col-sm-9 col-md-4">
+                                <h6 class="fw-bold mb-1 text-truncate" style="max-width: 100%;"><%= p.name %></h6>
+                                <p class="text-muted small mb-1">Category: <span class="badge bg-secondary"><%= p.category %></span></p>
+                                <% if (p.category !== 'Artificial') { %>
+                                    <p class="text-muted small mb-0">Weight: <%= p.weightInGrams %>g</p>
+                                <% } %>
+                            </div>
+                            
+                            <div class="col-6 col-md-3 mt-2 mt-md-0 d-flex justify-content-start justify-content-md-center">
+                                <div class="input-group input-group-sm shadow-sm" style="width: 110px; border: 1px solid #dee2e6; border-radius: 50px; overflow: hidden;">
+                                    <form action="/cart/decrease/<%= p._id %>" method="POST" class="m-0">
+                                        <button type="submit" class="btn btn-light border-0 px-2" style="font-weight: bold; background: white;">-</button>
+                                    </form>
+                                    
+                                    <div class="form-control text-center border-0 px-0 fw-bold bg-white" style="max-width: 40px;" readonly>
+                                        <%= item.quantity %>
+                                    </div>
+                                    
+                                    <form action="/cart/add/<%= p._id %>" method="POST" class="m-0">
+                                        <button type="submit" class="btn btn-light border-0 px-2 text-danger" style="font-weight: bold; background: white;">+</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="col-6 col-md-3 mt-2 mt-md-0 text-end">
+                                <h5 class="fw-bold text-dark mb-2">₹ <%= Math.round(itemTotal).toLocaleString('en-IN') %></h5>
+                                <form action="/cart/remove/<%= p._id %>" method="POST">
+                                    <button type="submit" class="btn btn-link text-danger p-0 small text-decoration-none fw-bold"><i class="fas fa-trash me-1"></i> Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-lg-top" style="top: 100px; z-index: 1;">
+                    <h5 class="fw-bold border-bottom pb-3 mb-4">Order Summary</h5>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-bold">₹ <%= Math.round(subtotal).toLocaleString('en-IN') %></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Delivery Charges</span>
+                        <span class="fw-bold text-success">Free</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
+                        <span class="text-muted">Taxes (GST 3%)</span>
+                        <% let gst = subtotal * 0.03; %>
+                        <span class="fw-bold">₹ <%= Math.round(gst).toLocaleString('en-IN') %></span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <h5 class="fw-bold mb-0">Grand Total</h5>
+                        <h4 class="fw-bold text-dark mb-0">₹ <%= Math.round(subtotal + gst).toLocaleString('en-IN') %></h4>
+                    </div>
+
+                    <a href="/checkout" class="btn w-100 rounded-pill fw-bold py-2 fs-5 text-dark shadow-sm" style="background-color: #d4af37;">
+                        Proceed to Checkout <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    <p class="text-center text-muted small mt-3 mb-0"><i class="fas fa-shield-alt me-1"></i>100% Secure Checkout</p>
+                </div>
+            </div>
+        </div>
+    <% } else { %>
+        <div class="row justify-content-center">
+            <div class="col-11 col-md-8 col-lg-6 text-center py-5 card border-0 shadow-sm rounded-4">
+                <img src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png" alt="Empty Cart" width="120" class="mb-4 opacity-50 img-fluid mx-auto">
+                <h3 class="fw-bold text-muted mb-3">Your cart is empty</h3>
+                <p class="text-muted mb-4 px-md-4">Looks like you haven't added any beautiful jewellery to your cart yet.</p>
+                <a href="/" class="btn btn-dark rounded-pill px-4 px-md-5 py-2 fw-bold shadow-sm">Continue Shopping</a>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

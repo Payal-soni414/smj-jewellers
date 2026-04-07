@@ -1,0 +1,48 @@
+/* public/css/admin.css */
+
+body {
+    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar Styling */
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: 250px;
+    background-color: #1a1a1a !important;
+}
+
+.list-group-item {
+    border: none;
+    padding: 15px 20px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.list-group-item:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #d4af37 !important;
+    padding-left: 25px;
+}
+
+.list-group-item.active {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #d4af37 !important;
+    border-left: 4px solid #d4af37;
+}
+
+/* Content Area */
+#page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+}
+
+.card {
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}

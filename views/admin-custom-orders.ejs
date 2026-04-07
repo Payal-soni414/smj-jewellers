@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Orders | SMJ Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Tab Design */
+        .nav-pills .nav-link.active { background-color: #d4af37 !important; color: white !important; }
+        .nav-pills .nav-link { color: #2c3e50; transition: 0.3s; }
+        .nav-pills .nav-link:hover { background-color: rgba(212, 175, 55, 0.1); }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div class="d-flex flex-column flex-lg-row" id="wrapper">
+        
+        <%- include('partials/admin-sidebar') %>
+
+        <div id="page-content-wrapper" class="w-100 overflow-hidden bg-light">
+            
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm mb-4">
+                <h4 class="mb-0 fw-bold"><a href="/admin" class="text-dark text-decoration-none"><i class="fas fa-arrow-left me-3"></i></a> Custom Jewellery Requests</h4>
+            </nav>
+
+            <div class="container-fluid px-4 pb-5">
+                
+                <% 
+                    let activeOrders = [];
+                    let completedOrders = [];
+                    if (orders && orders.length > 0) {
+                        activeOrders = orders.filter(o => o.status !== 'Completed');
+                        completedOrders = orders.filter(o => o.status === 'Completed');
+                    }
+                %>
+
+                <ul class="nav nav-pills mb-4 bg-white p-2 rounded-pill shadow-sm d-flex flex-wrap gap-2" id="pills-tab" role="tablist">
+                    <li class="nav-item flex-grow-1 text-center" role="presentation">
+                        <button class="nav-link active rounded-pill fw-bold px-4 w-100 custom-tab-btn" id="pills-active-tab" data-bs-toggle="pill" data-bs-target="#pills-active" type="button" role="tab">
+                            Active Requests <span class="badge bg-danger ms-1"><%= activeOrders.length %></span>
+                        </button>
+                    </li>
+                    <li class="nav-item flex-grow-1 text-center" role="presentation">
+                        <button class="nav-link rounded-pill fw-bold px-4 w-100 custom-tab-btn" id="pills-completed-tab" data-bs-toggle="pill" data-bs-target="#pills-completed" type="button" role="tab">
+                            Completed <span class="badge bg-success ms-1"><%= completedOrders.length %></span>
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                    
+                    <div class="tab-pane fade show active" id="pills-active" role="tabpanel">
+                        <div class="row g-4">
+                            <% if (activeOrders.length > 0) { %>
+                                <% activeOrders.forEach(order => { %>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                                            <div class="position-relative bg-dark d-flex align-items-center justify-content-start overflow-auto p-2" style="height: 180px;">
+                                                <% if(order.imagePaths && order.imagePaths.length > 0) { %>
+                                                    <% order.imagePaths.forEach(img => { %>
+                                                        <a href="<%= img %>" target="_blank" class="flex-shrink-0 me-2">
+                                                            <img src="<%= img %>" class="rounded border border-secondary" style="height: 150px; width: 150px; object-fit: cover;">
+                                                        </a>
+                                                    <% }) %>
+                                                <% } else { %>
+                                                    <div class="w-100 text-center text-muted"><i class="fas fa-image mb-2 fs-3"></i><br>No Images Provided</div>
+                                                <% } %>
+                                                <span class="position-absolute top-0 end-0 m-2 badge <%= order.status === 'Reviewed' ? 'bg-info' : 'bg-warning text-dark' %> shadow-sm">
+                                                    <%= order.status %>
+                                                </span>
+                                            </div>
+                                            <div class="card-body bg-white p-4 d-flex flex-column">
+                                                <h5 class="fw-bold mb-1"><i class="fas fa-user-circle text-muted me-2"></i><%= order.customerName %></h5>
+                                                <p class="text-primary fw-bold mb-3"><i class="fas fa-phone-alt me-2"></i><%= order.phone %></p>
+                                                <h6 class="fw-bold text-muted small text-uppercase">Design Details:</h6>
+                                                <p class="small text-secondary mb-4 p-3 bg-light rounded-3" style="min-height: 80px;"><%= order.details %></p>
+                                                
+                                                <form action="/admin/custom-orders/<%= order._id %>/status" method="POST" class="d-flex flex-column flex-sm-row gap-2 mt-auto">
+                                                    <select name="status" class="form-select form-select-sm border-secondary fw-bold">
+                                                        <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                                        <option value="Reviewed" <%= order.status === 'Reviewed' ? 'selected' : '' %>>Reviewed</option>
+                                                        <option value="Completed" <%= order.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                                                    </select>
+                                                    <button type="submit" class="btn btn-sm btn-dark px-3 fw-bold w-100 w-sm-auto">Update</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="col-12 text-center py-5">
+                                    <i class="fas fa-check-circle fa-3x text-success mb-3 opacity-50"></i>
+                                    <h4 class="text-muted">No Active Requests!</h4>
+                                    <p class="small text-muted">You have cleared all pending custom orders.</p>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-completed" role="tabpanel">
+                        <div class="row g-4">
+                            <% if (completedOrders.length > 0) { %>
+                                <% completedOrders.forEach(order => { %>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden" style="opacity: 0.85;">
+                                            <div class="position-relative bg-dark d-flex align-items-center justify-content-start overflow-auto p-2" style="height: 180px;">
+                                                <% if(order.imagePaths && order.imagePaths.length > 0) { %>
+                                                    <% order.imagePaths.forEach(img => { %>
+                                                        <a href="<%= img %>" target="_blank" class="flex-shrink-0 me-2">
+                                                            <img src="<%= img %>" class="rounded border border-secondary" style="height: 150px; width: 150px; object-fit: cover;">
+                                                        </a>
+                                                    <% }) %>
+                                                <% } else { %>
+                                                    <div class="w-100 text-center text-muted"><i class="fas fa-image mb-2 fs-3"></i><br>No Images Provided</div>
+                                                <% } %>
+                                                <span class="position-absolute top-0 end-0 m-2 badge bg-success shadow-sm">
+                                                    <%= order.status %>
+                                                </span>
+                                            </div>
+                                            <div class="card-body bg-light p-4 d-flex flex-column">
+                                                <h5 class="fw-bold mb-1"><i class="fas fa-user-check text-success me-2"></i><%= order.customerName %></h5>
+                                                <p class="text-muted mb-3"><i class="fas fa-phone-alt me-2"></i><%= order.phone %></p>
+                                                <p class="small text-secondary mb-3 p-3 bg-white border rounded-3" style="min-height: 80px;"><%= order.details %></p>
+                                                
+                                                <form action="/admin/custom-orders/<%= order._id %>/status" method="POST" class="d-flex flex-column flex-sm-row gap-2 mt-auto">
+                                                    <select name="status" class="form-select form-select-sm border-secondary fw-bold">
+                                                        <option value="Pending">Move to Pending</option>
+                                                        <option value="Completed" selected>Completed</option>
+                                                    </select>
+                                                    <button type="submit" class="btn btn-sm btn-outline-secondary px-3 w-100 w-sm-auto">Update</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="col-12 text-center py-5">
+                                    <i class="fas fa-box-open fa-3x text-muted mb-3 opacity-25"></i>
+                                    <h4 class="text-muted">No Completed Orders Yet</h4>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

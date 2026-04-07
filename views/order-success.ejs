@@ -1,0 +1,70 @@
+<%- include('partials/header') %>
+
+<div class="container py-5 mt-4 mt-md-5">
+    <div class="row justify-content-center">
+        <div class="col-11 col-sm-8 col-md-6 col-lg-5 text-center">
+            
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 position-relative overflow-hidden mt-3 mt-md-0">
+                
+                <div class="position-absolute top-0 start-0 w-100 bg-light" style="height: 120px; border-bottom: 3px solid #d4af37;"></div>
+
+                <div class="position-relative mb-4 mt-2 mt-md-3">
+                    <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm check-bounce" style="width: 100px; height: 100px; border: 5px solid #198754;">
+                        <i class="fas fa-check text-success" style="font-size: 50px;"></i>
+                    </div>
+                </div>
+
+                <h2 class="fw-bold mb-2 fs-3 fs-md-2" style="color: #2c3e50;">Order Placed!</h2>
+                <p class="text-muted mb-4 small px-2">Thank you for shopping with Shree Mahalakshmi Jewellers. Your order is confirmed and will be processed soon.</p>
+                
+                <div class="bg-light border rounded-3 p-3 mb-4 shadow-sm text-start">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted small fw-bold text-uppercase">Order ID</span>
+                        <i class="fas fa-box text-warning"></i>
+                    </div>
+                    <span class="fw-bold fs-5 text-dark text-break">#<%= orderId %></span>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <a href="/orders" class="btn btn-dark rounded-pill fw-bold py-3 shadow-sm custom-btn" style="background-color: #2c3e50; border: none;">
+                        <i class="fas fa-receipt me-2"></i> View My Orders
+                    </a>
+                    <a href="/" class="btn btn-outline-dark rounded-pill fw-bold py-2 outline-gold-btn" style="color: #d4af37; border-color: #d4af37;">
+                        Continue Shopping
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .check-bounce {
+        animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    
+    @keyframes bounceIn {
+        0% { transform: scale(0); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    /* Button Hover Effects */
+    .custom-btn { transition: 0.3s; }
+    .custom-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(44, 62, 80, 0.4) !important;
+        background-color: #1a252f !important;
+    }
+    
+    .outline-gold-btn { transition: 0.3s; }
+    .outline-gold-btn:hover {
+        background-color: #d4af37 !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+</style>
+
+<%- include('partials/footer') %>

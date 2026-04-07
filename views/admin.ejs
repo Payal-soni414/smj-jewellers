@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | SMJ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+
+    <div class="d-flex flex-column flex-lg-row" id="wrapper">
+        
+        <%- include('partials/admin-sidebar') %>
+
+        <div id="page-content-wrapper" class="w-100 overflow-hidden">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm mb-4">
+                <h4 class="mb-0 fw-bold">Dashboard Overview</h4>
+                <div class="ms-auto d-flex align-items-center d-none d-sm-flex">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=d4af37&color=fff" class="rounded-circle me-2" width="40">
+                    <span class="fw-bold">Admin Panel</span>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-2 px-lg-4 pb-5">
+                
+                <div class="card border-0 shadow-sm mb-5 rounded-4 overflow-hidden">
+                    <div class="card-header bg-white fw-bold py-3 fs-5 border-0">
+                        <i class="fas fa-chart-line me-2 text-warning"></i>Update Daily Metal Rates
+                    </div>
+                    <div class="card-body p-4 bg-light">
+                        <form action="/admin/update-rates" method="POST" class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-muted small">22K Gold Rate (₹ per gm)</label>
+                                <input type="number" step="0.01" name="goldRate22K" class="form-control bg-white shadow-sm border-0 py-2" value="<%= typeof rate !== 'undefined' && rate ? (rate.goldRate22K * 10) : '' %>" placeholder="e.g. 64400" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-muted small">Silver Rate (₹ per kg)</label>
+                                <input type="number" step="0.01" name="silverRate" class="form-control bg-white shadow-sm border-0 py-2" value="<%= typeof rate !== 'undefined' && rate ? rate.silverRate : '' %>" placeholder="e.g. 85000" required>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-dark w-100 fw-bold py-2 shadow-sm">Update Live Rates</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <h5 class="fw-bold mb-4 border-bottom pb-2 text-muted">Quick Actions Management</h5>
+                
+                <div class="row g-4">
+                    <div class="col-sm-6 col-lg-3">
+                        <a href="/admin/analytics" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm text-white p-3 h-100 rounded-4" style="background: linear-gradient(135deg, #2c3e50, #3498db); transition: transform 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-white mb-1"><i class="fas fa-chart-pie me-2"></i>Analytics</h5>
+                                        <p class="mb-0 small" style="color: rgba(255,255,255,0.8);">Sales & Reports</p>
+                                    </div>
+                                    <span class="btn btn-light btn-sm rounded-circle shadow-sm">
+                                        <i class="fas fa-arrow-right text-primary"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <a href="/admin/manage-products" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm bg-primary text-white p-3 h-100 rounded-4" style="transition: transform 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-white mb-1"><i class="fas fa-box me-2"></i>Products</h5>
+                                        <p class="mb-0 small" style="color: rgba(255,255,255,0.8);">Add, Edit or Delete</p>
+                                    </div>
+                                    <span class="btn btn-light btn-sm rounded-circle shadow-sm">
+                                        <i class="fas fa-arrow-right text-primary"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <a href="/admin/trending" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm bg-warning text-dark p-3 h-100 rounded-4" style="transition: transform 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-dark mb-1"><i class="fas fa-fire text-danger me-2"></i>Trending</h5>
+                                        <p class="mb-0 small" style="color: rgba(0,0,0,0.7);">Manage Home Page</p>
+                                    </div>
+                                    <span class="btn btn-dark btn-sm rounded-circle shadow-sm">
+                                        <i class="fas fa-arrow-right text-warning"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <a href="/admin/orders" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm bg-success text-white p-3 h-100 rounded-4" style="transition: transform 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-white mb-1"><i class="fas fa-shopping-cart me-2"></i>Orders</h5>
+                                        <p class="mb-0 small" style="color: rgba(255,255,255,0.8);">Update Status</p>
+                                    </div>
+                                    <span class="btn btn-light btn-sm rounded-circle shadow-sm">
+                                        <i class="fas fa-arrow-right text-success"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <a href="/admin/reviews" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm text-white p-3 h-100 rounded-4" style="background-color: #00b4d8; transition: transform 0.2s ease; cursor: pointer; border-left: 4px solid #d4af37 !important;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-white mb-1"><i class="fas fa-star text-warning me-2"></i>Reviews</h5>
+                                        <p class="mb-0 small" style="color: rgba(255,255,255,0.9);">Manage Ratings</p>
+                                    </div>
+                                    <span class="btn btn-light btn-sm rounded-circle shadow-sm">
+                                        <i class="fas fa-arrow-right" style="color: #5ed0e7;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <a href="/admin/custom-orders" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm text-white p-3 h-100 rounded-4" style="background-color: #d63384; transition: transform 0.2s ease; cursor: pointer; border-left: 4px solid #d4af37 !important;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-white mb-1"><i class="fas fa-magic text-warning me-2"></i>Custom</h5>
+                                        <p class="mb-0 small" style="color: rgba(255,255,255,0.9);">Manage Designs</p>
+                                    </div>
+                                    <span class="btn btn-light btn-sm rounded-circle shadow-sm">
+                                        <i class="fas fa-arrow-right" style="color: #d63384;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <a href="/admin/subscribers" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm text-white p-3 h-100 rounded-4" style="background-color: #6f42c1; transition: transform 0.2s ease; cursor: pointer; border-left: 4px solid #d4af37 !important;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-white mb-1"><i class="fas fa-envelope-open-text text-warning me-2"></i>Newsletter</h5>
+                                        <p class="mb-0 small" style="color: rgba(255,255,255,0.9);">View Subscribers</p>
+                                    </div>
+                                    <span class="btn btn-light btn-sm rounded-circle shadow-sm">
+                                        <i class="fas fa-arrow-right" style="color: #6f42c1;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-3">
+                        <a href="/admin/enquiries" class="text-decoration-none">
+                            <div class="card border-0 shadow-sm text-white p-3 h-100 rounded-4" style="background-color: #20c997; transition: transform 0.2s ease; cursor: pointer; border-left: 4px solid #d4af37 !important;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-white mb-1"><i class="fas fa-headset text-warning me-2"></i>Enquiries</h5>
+                                        <p class="mb-0 small" style="color: rgba(255,255,255,0.9);">Customer Messages</p>
+                                    </div>
+                                    <span class="btn btn-light btn-sm rounded-circle shadow-sm">
+                                        <i class="fas fa-arrow-right" style="color: #20c997;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

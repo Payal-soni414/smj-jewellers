@@ -1,0 +1,208 @@
+<footer class="pt-5 pb-3 mt-5" style="background-color: #111; color: #ccc;">
+        <div class="container">
+            <div class="row mb-5 align-items-center bg-dark p-4 rounded-4 shadow-sm text-center text-lg-start" style="border: 1px solid #333;">
+                <div class="col-lg-6 mb-3 mb-lg-0">
+                    <h4 class="text-white fw-bold mb-1">Subscribe to our Newsletter</h4>
+                    <p class="mb-0 small">Get updates on new collections and special offers.</p>
+                </div>
+                <div class="col-lg-6">
+                    <form action="/subscribe" method="POST" class="d-flex flex-column flex-sm-row gap-2 justify-content-center justify-content-lg-end">
+                        <input type="email" name="email" class="form-control" placeholder="Enter your email" required style="max-width: 100%; width: 100%;">
+                        <button type="submit" class="btn btn-warning fw-bold text-nowrap w-100 w-sm-auto">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <h4 class="text-uppercase fw-bold mb-4" style="color: #d4af37; letter-spacing: 1px;">Shree Mahalakshmi Jewellers</h4>
+                    <p class="small pe-lg-4" style="line-height: 1.8;"> Welcome to Shree Mahalakshmi Jewellers, your trusted destination for purity and elegance. Explore our stunning collection of pure Gold, premium Silver, and beautiful Artificial jewellery, designed to add sparkle to your every occasion.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-white bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; transition: 0.3s;"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; transition: 0.3s;"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; transition: 0.3s;"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="text-white fw-bold mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/about" class="text-decoration-none text-secondary hover-warning" style="transition: 0.3s;">About Us</a></li>
+                        <li class="mb-2"><a href="/gold" class="text-decoration-none text-secondary hover-warning" style="transition: 0.3s;">Shop Gold</a></li>
+                        <li class="mb-2"><a href="/silver" class="text-decoration-none text-secondary hover-warning" style="transition: 0.3s;">Shop Silver</a></li>
+                        <li class="mb-2"><a href="/artificial" class="text-decoration-none text-secondary hover-warning" style="transition: 0.3s;">Artificial</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="text-white fw-bold mb-4">Customer Care</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/contact" class="text-decoration-none text-secondary" style="transition: 0.3s;">Contact Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary" style="transition: 0.3s;">Track Order</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary" style="transition: 0.3s;">Returns & Exchanges</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary" style="transition: 0.3s;">Shipping Policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white fw-bold mb-4">Contact Info</h5>
+                    <ul class="list-unstyled small">
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-map-marker-alt mt-1 me-3" style="color: #d4af37;"></i> 
+                            <span> Gagrana Merta City<br>Nagaur, Rajasthan, India</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-phone-alt me-3" style="color: #d4af37;"></i> 
+                            <span>+91 9549589500</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-envelope me-3" style="color: #d4af37;"></i> 
+                            <span>support.smjewellers@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center border-top border-secondary pt-4 mt-4 small">
+                <p class="mb-0">&copy; 2026 Shree Mahalakshmi Jewellers. Developed by Nisha Soni & Payal Soni. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/script.js"></script>
+    <script>
+    async function toggleWishlist(productId, btnElement) {
+        const icon = btnElement.querySelector('i');
+        // Animation ke liye turant class badlo
+        const isLiked = icon.classList.contains('fas');
+        
+        if (isLiked) {
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+        } else {
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+        }
+
+        try {
+            const response = await fetch('/api/wishlist/toggle/' + productId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            
+            if (!data.success && data.message === 'login_required') {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Wishlist Badge update
+            const badge = document.querySelector('a[href="/wishlist"] .badge');
+            if (badge && data.success) {
+                let count = parseInt(badge.innerText) || 0;
+                badge.innerText = data.action === 'added' ? count + 1 : count - 1;
+            }
+        } catch (err) {
+            console.error("Wishlist error:", err);
+        }
+    }
+</script>
+    
+    <style>
+        .hover-warning:hover { color: #d4af37 !important; padding-left: 5px; }
+    </style>
+    
+    <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2026/04/01/14/20260401142233-HYTED1S4.js" defer></script>
+<div class="smj-floating-tooltip" id="smj-tooltip">
+  How can I help you?
+</div>
+
+<style>
+  .smj-floating-tooltip {
+      position: fixed;
+      bottom: 95px; 
+      right: 25px;  
+      background-color: #ffffff;
+      color: #000000;
+      padding: 8px 16px;
+      border-radius: 20px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 999999; 
+      pointer-events: none; 
+      animation: upDown 2s infinite ease-in-out; 
+      transition: opacity 0.3s ease; 
+      opacity: 1; 
+  }
+
+  .smj-floating-tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      right: 18px;
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #ffffff;
+  }
+
+  @keyframes upDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+  }
+</style>
+
+<script>
+  const smjTooltip = document.getElementById('smj-tooltip');
+  
+  let isChatOpen = false;
+  let isMouseNear = false;
+
+  document.addEventListener('mousemove', function(e) {
+      if (window.innerWidth - e.clientX < 130 && window.innerHeight - e.clientY < 130) {
+          isMouseNear = true;
+      } else {
+          isMouseNear = false;
+      }
+      checkAndShowTooltip(); 
+  });
+
+  setInterval(() => {
+      let detectedOpen = false;
+      const elements = document.querySelectorAll('iframe, div[id*="bp-web"], div[id*="botpress"]');
+      
+      for (let el of elements) {
+          if (el.clientHeight > 250) {
+              detectedOpen = true;
+              break;
+          }
+      }
+      
+      if (detectedOpen !== isChatOpen) {
+          isChatOpen = detectedOpen;
+          checkAndShowTooltip(); 
+      }
+  }, 300);
+
+  function checkAndShowTooltip() {
+      if (!smjTooltip) return;
+
+      if (isChatOpen) {
+          smjTooltip.style.opacity = '0';
+      } else {
+          if (isMouseNear) {
+              smjTooltip.style.opacity = '0';
+          } else {
+              smjTooltip.style.opacity = '1';
+          }
+      }
+  }
+</script>
+   
+</body>
+</html>

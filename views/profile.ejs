@@ -1,0 +1,147 @@
+<%- include('partials/header') %>
+
+<div class="container pt-3 pt-lg-5 pb-5 mt-lg-3">
+    <div class="row">
+        
+        <div class="col-lg-3 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden sticky-lg-top custom-sticky" style="z-index: 1;">
+                
+                <div class="bg-dark text-white text-center py-4 d-none d-lg-block" style="background-color: #2c3e50 !important;">
+                    <div class="rounded-circle d-inline-flex justify-content-center align-items-center mb-2 shadow" style="width: 85px; height: 85px; background-color: #d4af37; color: #fff; font-size: 40px; font-weight: bold; border: 3px solid rgba(255,255,255,0.2);">
+                        <%= userData.name.charAt(0).toUpperCase() %>
+                    </div>
+                    <h5 class="fw-bold mb-0 mt-2 text-truncate px-2"><%= userData.name %></h5>
+                    <p class="text-white-50 small mb-0 text-uppercase" style="letter-spacing: 1px;"><%= userData.role %></p>
+                </div>
+                
+                <div class="p-2 p-lg-0 bg-white">
+                    <nav class="nav nav-pills flex-row flex-lg-column flex-nowrap overflow-auto custom-nav-scroll gap-2 gap-lg-0">
+                        <a href="/profile" class="nav-link active fw-bold py-2 py-lg-3 px-4 text-nowrap rounded-pill rounded-lg-0 shadow-sm shadow-lg-none" style="background-color: #d4af37; color: white;">
+                            <i class="fas fa-user-circle me-2"></i> My Profile
+                        </a>
+                        <a href="/orders" class="nav-link fw-bold text-muted py-2 py-lg-3 px-4 text-nowrap rounded-pill rounded-lg-0 border border-lg-0 bg-light bg-lg-transparent">
+                            <i class="fas fa-box-open me-2"></i> My Orders
+                        </a>
+                        <a href="/wishlist" class="nav-link fw-bold text-muted py-2 py-lg-3 px-4 text-nowrap rounded-pill rounded-lg-0 border border-lg-0 bg-light bg-lg-transparent">
+                            <i class="fas fa-heart me-2"></i> Wishlist
+                        </a>
+                        <a href="/logout" class="nav-link text-danger fw-bold py-2 py-lg-3 px-4 text-nowrap rounded-pill rounded-lg-0 border border-lg-0 bg-light bg-lg-transparent">
+                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 h-100">
+                
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h4 class="fw-bold mb-0 fs-5 fs-md-4 text-dark">Personal Information</h4>
+                    <button type="button" class="btn btn-sm rounded-pill fw-bold px-3 px-md-4 text-white shadow-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal" style="background-color: #d4af37; border: none;">
+                        <i class="fas fa-edit me-1"></i> Edit
+                    </button>
+                </div>
+                <hr class="text-muted mb-4 opacity-25">
+
+                <div class="row g-3 g-md-4">
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 bg-light rounded-3 shadow-sm h-100" style="border-left: 4px solid #d4af37;">
+                            <label class="text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">Full Name</label>
+                            <p class="fs-5 fw-bold text-dark mb-0 text-break"><%= userData.name %></p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 bg-light rounded-3 shadow-sm h-100" style="border-left: 4px solid #d4af37;">
+                            <label class="text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">Email Address</label>
+                            <p class="fs-6 fs-md-5 fw-bold text-dark mb-0 text-break"><%= userData.email %></p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 bg-light rounded-3 shadow-sm h-100" style="border-left: 4px solid #d4af37;">
+                            <label class="text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">Mobile Number</label>
+                            <p class="fs-5 fw-bold text-dark mb-0">+91 <%= userData.mobile || 'Not Provided' %></p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 bg-light rounded-3 shadow-sm h-100" style="border-left: 4px solid #2c3e50;">
+                            <label class="text-muted small fw-bold text-uppercase" style="letter-spacing: 1px;">Account Status</label>
+                            <p class="fs-5 fw-bold text-success mb-0"><i class="fas fa-check-circle me-1"></i> Active & Verified</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 mt-md-5 bg-white rounded-4 p-4 text-center border shadow-sm">
+                    <i class="fas fa-shield-alt fs-1 mb-2" style="color: #2c3e50;"></i>
+                    <h6 class="fw-bold text-dark">Secure & Encrypted Account</h6>
+                    <p class="text-muted small mb-0">Your personal data is fully protected with industry-standard bcrypt encryption.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header text-white border-0" style="background-color: #2c3e50;">
+                <h5 class="modal-title fw-bold"><i class="fas fa-user-edit me-2 text-warning"></i>Edit Info</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form action="/profile/edit" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Full Name</label>
+                        <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-user text-muted"></i></span>
+                            <input type="text" name="name" class="form-control bg-light border-0 py-2 py-md-3" value="<%= userData.name %>" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Mobile Number</label>
+                        <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                            <span class="input-group-text bg-light border-0">+91</span>
+                            <input type="tel" name="mobile" class="form-control bg-light border-0 py-2 py-md-3" value="<%= userData.mobile %>" required pattern="[0-9]{10}">
+                        </div>
+                    </div>
+
+                    <div class="mb-4 text-center">
+                        <label class="form-label text-muted small fw-bold text-uppercase d-block text-start">Email Address</label>
+                        <div class="input-group opacity-75">
+                            <span class="input-group-text bg-white border-0"><i class="fas fa-lock text-muted"></i></span>
+                            <input type="email" class="form-control bg-white border-0 text-muted" value="<%= userData.email %>" readonly>
+                        </div>
+                        <small class="text-danger mt-2 d-block" style="font-size: 0.75rem;"><i class="fas fa-info-circle me-1"></i>Email cannot be changed for security reasons.</small>
+                    </div>
+
+                    <button type="submit" class="btn w-100 fw-bold py-3 text-white rounded-pill shadow-sm custom-save-btn" style="background-color: #d4af37; transition: 0.3s;">
+                        Save Changes <i class="fas fa-check-circle ms-1"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media (min-width: 992px) {
+        .custom-sticky { top: 100px; }
+    }
+    @media (max-width: 991px) {
+        .custom-sticky { top: 0 !important; }
+    }
+
+    /* Custom Scrollbar for Mobile Menu */
+    .custom-nav-scroll::-webkit-scrollbar { display: none; }
+    .custom-nav-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .nav-link { transition: all 0.3s ease; }
+    .nav-link:not(.active):not(.text-danger):hover { background-color: #f8f9fa; color: #d4af37 !important; }
+    
+    .custom-save-btn:hover { background-color: #b8962e !important; transform: translateY(-2px); }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<%- include('partials/footer') %>

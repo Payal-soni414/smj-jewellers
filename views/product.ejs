@@ -1,0 +1,189 @@
+<%- include('partials/header') %>
+
+<div class="container py-4 py-md-5 mt-4 mt-md-5">
+    <div class="mb-4">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary rounded-pill shadow-sm btn-sm px-3">
+            <i class="fas fa-arrow-left me-2"></i>Back
+        </a>
+    </div>
+
+    <div class="row g-4 g-lg-5">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden p-2 p-md-3 bg-white position-relative">
+                
+                <% if (product.isTrending) { %>
+                    <div class="position-absolute top-0 start-0 m-2 m-md-3 z-3">
+                        <span class="badge bg-danger px-3 py-2 rounded-pill shadow-sm"><i class="fas fa-fire me-1"></i> Trending</span>
+                    </div>
+                <% } %>
+
+                <% if (!product.inStock) { %>
+                    <div class="position-absolute top-0 end-0 m-2 m-md-3 z-3">
+                        <span class="badge bg-danger px-3 py-2 rounded-pill shadow-sm"><i class="fas fa-ban me-1"></i> Out of Stock</span>
+                    </div>
+                <% } %>
+
+                <div class="text-center">
+                    <img src="<%= product.imagePath %>" alt="<%= product.name %>" class="img-fluid rounded-3 shadow-sm mb-3 <%= !product.inStock ? 'opacity-75' : '' %>" style="max-height: 450px; width: auto; object-fit: contain;">
+                </div>
+                
+                <button class="virtual-try-on-btn shadow-sm" onclick="showTryOnMessage()">
+                    <i class="fas fa-camera me-2"></i> Virtual Try-On
+                </button>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="ps-lg-4 mt-3 mt-lg-0">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2 small">
+                        <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted">Home</a></li>
+                        <li class="breadcrumb-item active text-warning fw-bold" aria-current="page"><%= product.category %></li>
+                    </ol>
+                </nav>
+
+                <h1 class="fw-bold mb-2 product-main-title" style="color: #2c3e50; font-family: serif;"><%= product.name %></h1>
+                
+                <div class="mb-3">
+                    <% 
+                        let avg = 0; 
+                        if(product.reviews && product.reviews.length > 0) {
+                            let sum = product.reviews.reduce((acc, r) => acc + (r.rating || 5), 0);
+                            avg = (sum / product.reviews.length).toFixed(1);
+                        }
+                    %>
+                    <div class="text-warning small d-flex align-items-center gap-2">
+                        <span class="d-flex gap-1">
+                            <% for(let i=1; i<=5; i++) { %>
+                                <i class="<%= i <= Math.round(avg) ? 'fas' : 'far' %> fa-star"></i>
+                            <% } %>
+                        </span>
+                        <span class="text-muted small fw-bold">(<%= avg %> / 5.0)</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mb-4">
+                    <h2 class="fw-bold mb-0 text-dark fs-1">
+                        ₹ <%= Math.round(product.calculatedPrice).toLocaleString('en-IN') %>
+                    </h2>
+                    <span class="text-muted small">| Incl. taxes</span>
+                </div>
+
+                <div class="mb-4 pb-3 border-bottom">
+                    <h6 class="fw-bold text-uppercase text-muted small mb-3">Product Details</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2 d-flex align-items-center"><i class="fas fa-check-circle text-success me-3"></i><span><strong>Purity:</strong> <%= product.category === 'Gold' ? '22K Pure Gold' : 'Premium Quality' %></span></li>
+                        <% if(product.category === 'Gold' || product.category === 'Silver') { %>
+                            <li class="mb-2 d-flex align-items-center"><i class="fas fa-balance-scale text-warning me-3"></i><span><strong>Weight:</strong> <%= product.weightInGrams %> Grams</span></li>
+                        <% } %>
+                        <li class="d-flex align-items-start"><i class="fas fa-info-circle text-primary me-3 mt-1"></i><span><strong>Description:</strong> <%= product.description %></span></li>
+                    </ul>
+                </div>
+
+                <div class="mb-5">
+                    <% if (product.inStock) { %>
+                        <form action="/cart/add/<%= product._id %>" method="POST">
+                            <button type="submit" class="btn btn-dark btn-lg w-100 rounded-pill fw-bold shadow-sm py-3 add-cart-btn" style="background-color: #2c3e50;">
+                                <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                            </button>
+                        </form>
+                    <% } else { %>
+                        <button class="btn btn-secondary btn-lg w-100 rounded-pill fw-bold shadow-sm py-3" disabled>
+                            <i class="fas fa-box-open me-2"></i> Out of Stock
+                        </button>
+                    <% } %>
+                </div>
+
+                <div class="mt-5 p-3 p-md-4 rounded-4 shadow-sm" style="background-color: #f8f9fa;">
+                    <h4 class="fw-bold mb-4" style="color: #2c3e50;">Reviews (<%= product.reviews.length %>)</h4>
+                    
+                    <div class="pe-2 custom-review-scroll" style="max-height: 400px; overflow-y: auto;">
+                        <% if (product.reviews && product.reviews.length > 0) { %>
+                            <% product.reviews.reverse().forEach(review => { %>
+                                <div class="bg-white p-3 rounded-3 shadow-sm mb-3 border-start border-4 border-warning">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-sm-2">
+                                            <h6 class="fw-bold mb-0"><%= review.userName %></h6>
+                                            <small class="text-muted small"><%= new Date(review.date).toLocaleDateString('en-IN') %></small>
+                                        </div>
+                                        <% if (user && (user.id === review.userId.toString() || user.role === 'admin')) { %>
+                                            <form action="/product/<%= product._id %>/review/<%= review._id %>/delete" method="POST" onsubmit="return confirm('Delete this review?');">
+                                                <button type="submit" class="btn btn-sm text-danger p-0"><i class="fas fa-trash-alt"></i></button>
+                                            </form>
+                                        <% } %>
+                                    </div>
+                                    <div class="text-warning mb-2" style="font-size: 0.7rem;">
+                                        <% for(let i=1; i<=5; i++) { %>
+                                            <i class="<%= i <= (review.rating || 5) ? 'fas' : 'far' %> fa-star"></i>
+                                        <% } %>
+                                    </div>
+                                    <p class="mb-0 text-muted small"><%= review.comment %></p>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-muted fst-italic small">No reviews yet. Be the first one!</p>
+                        <% } %>
+                    </div>
+
+                    <% if (user) { %>
+                       <form action="/product/<%= product._id %>/review" method="POST" class="mt-4 border-top pt-4">
+                            <label class="form-label fw-bold small text-muted">Rate your purchase</label>
+                            <div class="mb-3">
+                                <select name="rating" class="form-select form-select-sm border-warning rounded-3 shadow-sm w-100">
+                                    <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                                    <option value="4">⭐⭐⭐⭐ (Good)</option>
+                                    <option value="3">⭐⭐⭐ (Average)</option>
+                                    <option value="2">⭐⭐ (Fair)</option>
+                                    <option value="1">⭐ (Poor)</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <textarea name="comment" class="form-control border-0 shadow-sm rounded-3" rows="2" placeholder="Write a comment..." required></textarea>
+                                <button type="submit" class="btn btn-warning text-white fw-bold px-3 rounded-3 shadow-sm"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </form>
+                    <% } else { %>
+                        <div class="alert alert-info py-2 small mt-3 rounded-3 border-0">Please <a href="/login" class="fw-bold">Login</a> to write a review.</div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Responsive Title */
+    .product-main-title { font-size: 1.8rem; line-height: 1.2; }
+    @media (min-width: 768px) { .product-main-title { font-size: 2.8rem; } }
+
+    /* Try-On Button Custom Style */
+    .virtual-try-on-btn {
+        background-color: transparent;
+        color: #832729; 
+        border: 2px solid #832729;
+        padding: 12px 15px;
+        font-size: 16px;
+        border-radius: 50px;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
+        transition: 0.3s;
+        display: flex; justify-content: center; align-items: center;
+        margin-top: 15px;
+    }
+    .virtual-try-on-btn:hover { background-color: #832729; color: #fff; transform: translateY(-2px); }
+    
+    .add-cart-btn:active { transform: scale(0.98); }
+
+    /* Review Scroll styling */
+    .custom-review-scroll::-webkit-scrollbar { width: 5px; }
+    .custom-review-scroll::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 10px; }
+</style>
+
+<script>
+    function showTryOnMessage() {
+        alert("✨ Virtual Try-On feature is currently under development!\n\nWe are working on bringing you a live 3D AR experience soon. Stay tuned!");
+    }
+</script>
+
+<%- include('partials/footer') %>

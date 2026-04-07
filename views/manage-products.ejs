@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management | SMJ Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .nav-pills .nav-link { color: #6c757d; }
+        .nav-pills .nav-link.active { background-color: #2c3e50; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #pills-gold-tab.active { background-color: #d4af37; }
+        .custom-scrollbar::-webkit-scrollbar { display: none; }
+        .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="d-flex flex-column flex-lg-row" id="wrapper">
+    
+    <%- include('partials/admin-sidebar') %>
+
+    <div id="page-content-wrapper" class="w-100 overflow-hidden bg-light">
+        
+        <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 px-4 shadow-sm mb-4">
+            <h4 class="mb-0 fw-bold"><a href="/admin" class="text-dark text-decoration-none"><i class="fas fa-arrow-left me-3"></i></a> Product Management</h4>
+        </nav>
+
+        <div class="container-fluid px-4 pb-5">
+            
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 border-bottom pb-3 gap-3">
+                <div class="text-center text-sm-start">
+                    <h2 class="fw-bold fs-3 fs-md-2" style="color: #2c3e50;">
+                        <i class="fas <%= typeof isTrendingPage !== 'undefined' && isTrendingPage ? 'fa-fire text-danger' : 'fa-boxes text-warning' %> me-2"></i>
+                        <%= typeof isTrendingPage !== 'undefined' && isTrendingPage ? 'Trending Items Management' : 'Inventory Management' %>
+                    </h2>
+                    <p class="text-muted small mb-0">Add, edit or remove products from different categories.</p>
+                </div>
+            </div>
+
+            <div class="overflow-auto mb-4 custom-scrollbar">
+                <ul class="nav nav-pills nav-fill gap-2 gap-md-3 p-1 bg-white rounded-pill shadow-sm flex-nowrap" id="pills-tab" role="tablist" style="min-width: 350px;">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded-pill fw-bold text-nowrap" id="pills-gold-tab" data-bs-toggle="pill" data-bs-target="#pills-gold" type="button" role="tab"><i class="fas fa-coins me-2"></i>Gold</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill fw-bold text-nowrap" id="pills-silver-tab" data-bs-toggle="pill" data-bs-target="#pills-silver" type="button" role="tab"><i class="fas fa-ring me-2"></i>Silver</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill fw-bold text-nowrap" id="pills-artificial-tab" data-bs-toggle="pill" data-bs-target="#pills-artificial" type="button" role="tab"><i class="fas fa-gem me-2"></i>Artificial</button>
+                    </li>
+                </ul>
+            </div>
+
+            <% 
+                const goldProducts = products.filter(p => p.category === 'Gold');
+                const silverProducts = products.filter(p => p.category === 'Silver');
+                const artificialProducts = products.filter(p => p.category === 'Artificial');
+            %>
+
+            <div class="tab-content" id="pills-tabContent">
+                
+                <div class="tab-pane fade show active" id="pills-gold" role="tabpanel">
+                    <div class="card shadow-sm border-0 rounded-4 p-3 p-md-4">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3">
+                            <h5 class="fw-bold text-dark mb-0">Gold Items (<%= goldProducts.length %>)</h5>
+                            <% if (!(typeof isTrendingPage !== 'undefined' && isTrendingPage)) { %>
+                                <button class="btn btn-sm text-white rounded-pill px-4 py-2 fw-bold w-100 w-sm-auto shadow-sm" style="background-color: #d4af37;" data-bs-toggle="modal" data-bs-target="#addGoldModal">
+                                    <i class="fas fa-plus me-1"></i> Add Gold Item
+                                </button>
+                            <% } %>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light text-muted small text-uppercase">
+                                    <tr><th>Image</th><th>Name</th><th>Weight</th><th>Status</th><th>Action</th></tr>
+                                </thead>
+                                <tbody>
+                                    <% goldProducts.forEach(product => { %>
+                                        <tr>
+                                            <td><img src="<%= product.imagePath %>" width="50" class="rounded shadow-sm border" style="height: 50px; object-fit: cover;"></td>
+                                            <td class="fw-bold"><%= product.name %> <% if(product.isTrending) { %><span class="badge bg-danger ms-2 shadow-sm"><i class="fas fa-fire"></i> Trending</span><% } %></td>
+                                            <td><%= product.weightInGrams %> g</td>
+                                            <td>
+                                                <a href="/admin/products/toggle-stock/<%= product._id %>" class="btn btn-sm rounded-pill px-3 fw-bold shadow-sm <%= product.inStock ? 'btn-success' : 'btn-danger' %>" style="min-width: 110px;">
+                                                    <%= product.inStock ? 'In Stock' : 'Out of Stock' %>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm btn-outline-primary rounded-circle me-1 shadow-sm"><i class="fas fa-edit"></i></a>
+                                                <% if (typeof isTrendingPage !== 'undefined' && isTrendingPage) { %>
+                                                    <form action="/admin/remove-trending/<%= product._id %>" method="POST" class="d-inline">
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning rounded-circle shadow-sm"><i class="fas fa-times"></i></button>
+                                                    </form>
+                                                <% } else { %>
+                                                    <form action="/admin/delete-product/<%= product._id %>" method="POST" class="d-inline" onsubmit="return confirm('Delete this product?')">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle shadow-sm"><i class="fas fa-trash"></i></button>
+                                                    </form>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="pills-silver" role="tabpanel">
+                    <div class="card shadow-sm border-0 rounded-4 p-3 p-md-4">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3">
+                            <h5 class="fw-bold text-dark mb-0">Silver Items (<%= silverProducts.length %>)</h5>
+                            <% if (!(typeof isTrendingPage !== 'undefined' && isTrendingPage)) { %>
+                                <button class="btn btn-sm btn-secondary rounded-pill px-4 py-2 text-white fw-bold w-100 w-sm-auto shadow-sm" data-bs-toggle="modal" data-bs-target="#addSilverModal">
+                                    <i class="fas fa-plus me-1"></i> Add Silver Item
+                                </button>
+                            <% } %>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light text-muted small text-uppercase">
+                                    <tr><th>Image</th><th>Name</th><th>Weight</th><th>Status</th><th>Action</th></tr>
+                                </thead>
+                                <tbody>
+                                    <% silverProducts.forEach(product => { %>
+                                        <tr>
+                                            <td><img src="<%= product.imagePath %>" width="50" class="rounded shadow-sm border" style="height: 50px; object-fit: cover;"></td>
+                                            <td class="fw-bold"><%= product.name %> <% if(product.isTrending) { %><span class="badge bg-danger ms-2 shadow-sm"><i class="fas fa-fire"></i> Trending</span><% } %></td>
+                                            <td><%= product.weightInGrams %> g</td>
+                                            <td>
+                                                <a href="/admin/products/toggle-stock/<%= product._id %>" class="btn btn-sm rounded-pill px-3 fw-bold shadow-sm <%= product.inStock ? 'btn-success' : 'btn-danger' %>" style="min-width: 110px;">
+                                                    <%= product.inStock ? 'In Stock' : 'Out of Stock' %>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm btn-outline-primary rounded-circle me-1 shadow-sm"><i class="fas fa-edit"></i></a>
+                                                <% if (typeof isTrendingPage !== 'undefined' && isTrendingPage) { %>
+                                                    <form action="/admin/remove-trending/<%= product._id %>" method="POST" class="d-inline">
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning rounded-circle shadow-sm"><i class="fas fa-times"></i></button>
+                                                    </form>
+                                                <% } else { %>
+                                                    <form action="/admin/delete-product/<%= product._id %>" method="POST" class="d-inline" onsubmit="return confirm('Delete this product?')">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle shadow-sm"><i class="fas fa-trash"></i></button>
+                                                    </form>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="pills-artificial" role="tabpanel">
+                    <div class="card shadow-sm border-0 rounded-4 p-3 p-md-4">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3">
+                            <h5 class="fw-bold text-dark mb-0">Artificial Items (<%= artificialProducts.length %>)</h5>
+                            <% if (!(typeof isTrendingPage !== 'undefined' && isTrendingPage)) { %>
+                                <button class="btn btn-sm btn-dark rounded-pill px-4 py-2 fw-bold w-100 w-sm-auto shadow-sm" data-bs-toggle="modal" data-bs-target="#addArtificialModal">
+                                    <i class="fas fa-plus me-1"></i> Add Artificial Item
+                                </button>
+                            <% } %>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light text-muted small text-uppercase">
+                                    <tr><th>Image</th><th>Name</th><th>Price</th><th>Status</th><th>Action</th></tr>
+                                </thead>
+                                <tbody>
+                                    <% artificialProducts.forEach(product => { %>
+                                        <tr>
+                                            <td><img src="<%= product.imagePath %>" width="50" class="rounded shadow-sm border" style="height: 50px; object-fit: cover;"></td>
+                                            <td class="fw-bold"><%= product.name %> <% if(product.isTrending) { %><span class="badge bg-danger ms-2 shadow-sm"><i class="fas fa-fire"></i> Trending</span><% } %></td>
+                                            <td class="fw-bold text-success">₹ <%= product.makingCharges %></td>
+                                            <td>
+                                                <a href="/admin/products/toggle-stock/<%= product._id %>" class="btn btn-sm rounded-pill px-3 fw-bold shadow-sm <%= product.inStock ? 'btn-success' : 'btn-danger' %>" style="min-width: 110px;">
+                                                    <%= product.inStock ? 'In Stock' : 'Out of Stock' %>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm btn-outline-primary rounded-circle me-1 shadow-sm"><i class="fas fa-edit"></i></a>
+                                                <% if (typeof isTrendingPage !== 'undefined' && isTrendingPage) { %>
+                                                    <form action="/admin/remove-trending/<%= product._id %>" method="POST" class="d-inline">
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning rounded-circle shadow-sm"><i class="fas fa-times"></i></button>
+                                                    </form>
+                                                <% } else { %>
+                                                    <form action="/admin/delete-product/<%= product._id %>" method="POST" class="d-inline" onsubmit="return confirm('Delete this product?')">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle shadow-sm"><i class="fas fa-trash"></i></button>
+                                                    </form>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addGoldModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header" style="background-color: #d4af37; color: white;">
+                <h5 class="modal-title fw-bold"><i class="fas fa-coins me-2"></i>Add Gold Item</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="category" value="Gold">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Product Name</label>
+                        <input type="text" name="name" class="form-control rounded-3" placeholder="e.g. 22K Gold Chain" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted small">Weight (Grams)</label>
+                            <input type="number" step="0.01" name="weightInGrams" class="form-control rounded-3" placeholder="e.g. 10.5" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted small">Making Charges (₹)</label>
+                            <input type="number" name="makingCharges" class="form-control rounded-3" placeholder="e.g. 2500" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Product Image</label>
+                        <input type="file" name="image" class="form-control rounded-3" accept="image/*" required>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" name="isTrending" value="true" id="trendGold">
+                        <label class="form-check-label fw-bold text-dark" for="trendGold">Show in Trending Items 🔥</label>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn text-white rounded-pill px-4 fw-bold shadow-sm" style="background-color: #d4af37;">Upload Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addSilverModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title fw-bold"><i class="fas fa-ring me-2"></i>Add Silver Item</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="category" value="Silver">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Product Name</label>
+                        <input type="text" name="name" class="form-control rounded-3" placeholder="e.g. Silver Anklet" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted small">Weight (Grams)</label>
+                            <input type="number" step="0.01" name="weightInGrams" class="form-control rounded-3" placeholder="e.g. 50" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted small">Making Charges (₹)</label>
+                            <input type="number" name="makingCharges" class="form-control rounded-3" placeholder="e.g. 500" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Product Image</label>
+                        <input type="file" name="image" class="form-control rounded-3" accept="image/*" required>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" name="isTrending" value="true" id="trendSilver">
+                        <label class="form-check-label fw-bold text-dark" for="trendSilver">Show in Trending Items 🔥</label>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-secondary rounded-pill px-4 fw-bold shadow-sm">Upload Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addArtificialModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-bold"><i class="fas fa-gem me-2"></i>Add Artificial Item</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="category" value="Artificial">
+                    <input type="hidden" name="weightInGrams" value="0">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Product Name</label>
+                        <input type="text" name="name" class="form-control rounded-3" placeholder="e.g. Designer Necklace" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Final Price (₹)</label>
+                        <input type="number" name="makingCharges" class="form-control rounded-3" placeholder="e.g. 1500" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">Product Image</label>
+                        <input type="file" name="image" class="form-control rounded-3" accept="image/*" required>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" name="isTrending" value="true" id="trendArtificial">
+                        <label class="form-check-label fw-bold text-dark" for="trendArtificial">Show in Trending Items 🔥</label>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark rounded-pill px-4 fw-bold shadow-sm">Upload Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var activeTabId = localStorage.getItem('activeAdminTab');
+        if (activeTabId) {
+            var tabButton = document.querySelector(activeTabId);
+            if (tabButton) {
+                var tab = new bootstrap.Tab(tabButton);
+                tab.show();
+            }
+        }
+        var tabLinks = document.querySelectorAll('button[data-bs-toggle="pill"]');
+        tabLinks.forEach(function(link) {
+            link.addEventListener('shown.bs.tab', function(e) {
+                var currentTabId = '#' + e.target.id;
+                localStorage.setItem('activeAdminTab', currentTabId); 
+            });
+        });
+    });
+</script>
+</body>
+</html>

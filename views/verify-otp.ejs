@@ -1,0 +1,105 @@
+<%- include('partials/header') %>
+
+<div class="container py-5 mt-4 mt-md-5">
+    <div class="row justify-content-center">
+        <div class="col-11 col-sm-8 col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 mt-3 mt-md-0">
+                <div class="text-center mb-4">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 80px; height: 80px;">
+                        <i class="fas fa-shield-alt text-warning fa-2x" style="color: #d4af37 !important;"></i>
+                    </div>
+                    <h3 class="fw-bold fs-4 fs-md-3" style="color: #2c3e50;">Secure Reset</h3>
+                    <p class="text-muted small px-2">Enter the 4-digit OTP sent to your email and create a new password.</p>
+                </div>
+
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger border-0 small py-2 d-flex align-items-center rounded-3 shadow-sm mb-4" role="alert" style="background-color: #f8d7da; color: #842029;">
+                        <i class="fas fa-exclamation-circle me-2"></i> <%= error %>
+                    </div>
+                <% } %>
+
+                <form action="/reset-password" method="POST">
+                    <input type="hidden" name="email" value="<%= email %>">
+                    
+                    <div class="mb-4 text-center">
+                        <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing: 1px;">Enter 4-Digit OTP</label>
+                        <input type="number" name="otp" class="form-control bg-light border-0 py-3 text-center fw-bold fs-3 rounded-3 shadow-sm" placeholder="0 0 0 0" required oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" style="letter-spacing: 8px;">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">New Password</label>
+                        <div class="input-group shadow-sm rounded-3 overflow-hidden bg-light border border-light focus-ring-gold">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-lock text-muted"></i></span>
+                            <input type="password" id="newPassword" name="newPassword" class="form-control bg-light border-0 py-2 py-md-3 ps-1 shadow-none" placeholder="Enter new password" required minlength="6">
+                            <button class="btn bg-light border-0 text-muted px-3 shadow-none" type="button" onclick="togglePassword('newPassword', 'eyeIcon1')">
+                                <i class="far fa-eye" id="eyeIcon1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted">Confirm Password</label>
+                        <div class="input-group shadow-sm rounded-3 overflow-hidden bg-light border border-light focus-ring-gold">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-check-circle text-muted"></i></span>
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control bg-light border-0 py-2 py-md-3 ps-1 shadow-none" placeholder="Re-enter password" required minlength="6">
+                            <button class="btn bg-light border-0 text-muted px-3 shadow-none" type="button" onclick="togglePassword('confirmPassword', 'eyeIcon2')">
+                                <i class="far fa-eye" id="eyeIcon2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold py-2 py-md-3 mt-2 shadow-sm custom-reset-btn" style="background-color: #2c3e50; border: none; transition: 0.3s;">
+                        Update Password <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <a href="/login" class="text-decoration-none text-muted small fw-bold hover-warning" style="transition: 0.3s;">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Browser eye icon removal */
+    input::-ms-reveal, input::-ms-clear { display: none !important; }
+    
+    /* Chrome/Safari up-down arrows removal for OTP */
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* Focus effects */
+    .focus-ring-gold:focus-within { outline: 1px solid #d4af37; background-color: #fff !important; }
+    .focus-ring-gold:focus-within input, .focus-ring-gold:focus-within span, .focus-ring-gold:focus-within button { background-color: #fff !important; }
+    
+    .form-control:focus { outline: 1px solid #d4af37; background-color: #fff !important; }
+
+    /* Hover & Effects */
+    .custom-reset-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(44, 62, 80, 0.4) !important;
+        background-color: #1a252f !important;
+    }
+    .hover-warning:hover { color: #d4af37 !important; }
+</style>
+
+<script>
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace('far', 'fas');
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = "password";
+            icon.classList.replace('fas', 'far');
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+</script>
+
+<%- include('partials/footer') %>
