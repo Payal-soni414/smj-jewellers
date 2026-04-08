@@ -1168,12 +1168,11 @@ app.get('/api/site-data', async (req, res) => {
         res.status(500).json({ error: "Data not available" });
     }
 });
-// === API FOR BOTPRESS CHATBOT ===
+// === API FOR BOTPRESS CHATBOT (UPDATED MARKDOWN TRICK) ===
 app.get('/api/bot/products', async (req, res) => {
     try {
-        const query = req.query.q || ''; // Botpress पूछेगा कि क्या ढूँढना है (e.g. "Silver")
+        const query = req.query.q || ''; 
         
-        // डेटाबेस में नाम या केटेगरी के हिसाब से 5 प्रोडक्ट ढूँढो
         const products = await Product.find({
             $or: [
                 { name: { $regex: query, $options: 'i' } },
@@ -1181,17 +1180,23 @@ app.get('/api/bot/products', async (req, res) => {
             ]
         }).limit(5);
 
-        // Botpress को जिस फॉर्मेट में डेटा चाहिए, वैसा बनाओ
-        const botCards = products.map(p => ({
-            title: p.name,
-            subtitle: `Weight: ${p.weightInGrams}g | Category: ${p.category}`,
-            imageUrl: `https://sm-jewellers.onrender.com${p.imagePath}`, // अपना असली रेंडर वाला डोमेन डालना
-            link: `https://sm-jewellers.onrender.com/product/${p._id}`
-        }));
+        if(products.length === 0) {
+             return res.send("Sorry, no products found matching your request. 😔");
+        }
 
-        res.json(botCards); // Botpress को डेटा वापस भेज दो
+        // जादू यहाँ है: हम एक सुंदर मैसेज बना रहे हैं!
+        let markdownMessage = `Here are some amazing options for you:\n\n`;
+        
+        products.forEach(p => {
+            markdownMessage += `**${p.name}**\n`; // प्रोडक्ट का नाम (Bold)
+            markdownMessage += `![${p.name}](https://sm-jewellers.onrender.com${p.imagePath})\n`; // प्रोडक्ट की फोटो
+            markdownMessage += `👉 [Click here to Buy Now](https://sm-jewellers.onrender.com/product/${p._id})\n\n`; // लिंक
+            markdownMessage += `--- \n\n`; // एक लाइन खींचेगा
+        });
+
+        res.send(markdownMessage); // ये पूरा मैसेज बॉट को भेज दो
     } catch (err) {
-        res.status(500).json([]);
+        res.status(500).send("Sorry, I am facing some technical issues right now. 🛠️");
     }
 });
 // --- SERVER START ---
