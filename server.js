@@ -1168,6 +1168,32 @@ app.get('/api/site-data', async (req, res) => {
         res.status(500).json({ error: "Data not available" });
     }
 });
+// === API FOR BOTPRESS CHATBOT ===
+app.get('/api/bot/products', async (req, res) => {
+    try {
+        const query = req.query.q || ''; // Botpress पूछेगा कि क्या ढूँढना है (e.g. "Silver")
+        
+        // डेटाबेस में नाम या केटेगरी के हिसाब से 5 प्रोडक्ट ढूँढो
+        const products = await Product.find({
+            $or: [
+                { name: { $regex: query, $options: 'i' } },
+                { category: { $regex: query, $options: 'i' } }
+            ]
+        }).limit(5);
+
+        // Botpress को जिस फॉर्मेट में डेटा चाहिए, वैसा बनाओ
+        const botCards = products.map(p => ({
+            title: p.name,
+            subtitle: `Weight: ${p.weightInGrams}g | Category: ${p.category}`,
+            imageUrl: `https://sm-jewellers.onrender.com${p.imagePath}`, // अपना असली रेंडर वाला डोमेन डालना
+            link: `https://sm-jewellers.onrender.com/product/${p._id}`
+        }));
+
+        res.json(botCards); // Botpress को डेटा वापस भेज दो
+    } catch (err) {
+        res.status(500).json([]);
+    }
+});
 // --- SERVER START ---
 app.listen(PORT, () => {
     console.log(`Server start  http://localhost:${PORT}`);
