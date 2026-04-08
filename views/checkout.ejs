@@ -15,25 +15,71 @@
                             <label class="form-label small fw-bold text-muted">Full Name</label>
                             <input type="text" name="fullName" class="form-control bg-light border-0 py-2" value="<%= user.name %>" required>
                         </div>
+                        
                         <div class="col-12 col-md-6">
                             <label class="form-label small fw-bold text-muted">Mobile Number</label>
-                            <input type="tel" name="phone" class="form-control bg-light border-0 py-2" value="<%= user.mobile %>" pattern="[0-9]{10}" required>
+                            <input type="tel" id="mobileInput" name="phone" class="form-control bg-light border-0 py-2" value="<%= user.mobile %>" maxlength="10" pattern="[0-9]{10}" required>
+                            <small id="mobileError" class="text-danger mt-1 d-none fw-bold" style="font-size: 12px;">
+                                <i class="fas fa-exclamation-circle me-1"></i>Mobile number must be exactly 10 digits
+                            </small>
                         </div>
                         <div class="col-12">
                             <label class="form-label small fw-bold text-muted">Street Address / House No.</label>
-                            <input type="text" name="street" class="form-control bg-light border-0 py-2" placeholder="e.g. 123, ABC Colony, Phase 1" required>
+                            <input type="text" name="street" class="form-control bg-light border-0 py-2" placeholder="e.g. 123, Vaishali Nagar, Phase 1" required>
                         </div>
+                        
                         <div class="col-12 col-md-5">
-                            <label class="form-label small fw-bold text-muted">City</label>
-                            <input type="text" name="city" class="form-control bg-light border-0 py-2" placeholder="e.g. Pune" required>
+                            <label class="form-label small fw-bold text-muted">State</label>
+                            <select name="state" id="state" class="form-select bg-light border-0 py-2" required>
+                                <option value="" disabled selected>Select State</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <optgroup label="Union Territories">
+                                    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                    <option value="Chandigarh">Chandigarh</option>
+                                    <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra & Nagar Haveli and Daman & Diu</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                    <option value="Ladakh">Ladakh</option>
+                                    <option value="Lakshadweep">Lakshadweep</option>
+                                    <option value="Puducherry">Puducherry</option>
+                                </optgroup>
+                            </select>
                         </div>
                         <div class="col-12 col-md-4">
-                            <label class="form-label small fw-bold text-muted">State</label>
-                            <input type="text" name="state" class="form-control bg-light border-0 py-2" placeholder="e.g. Maharashtra" required>
+                            <label class="form-label small fw-bold text-muted">City</label>
+                            <input type="text" name="city" class="form-control bg-light border-0 py-2" placeholder="e.g. Jaipur" required>
                         </div>
+
                         <div class="col-12 col-md-3">
                             <label class="form-label small fw-bold text-muted">Pincode</label>
-                            <input type="text" name="pincode" class="form-control bg-light border-0 py-2" pattern="[0-9]{6}" placeholder="e.g. 411001" required>
+                            <input type="text" name="pincode" id="pincode" class="form-control bg-light border-0 py-2" pattern="[0-9]{6}" placeholder="e.g. 302021" required>
                         </div>
                     </div>
                 </div>
@@ -94,10 +140,9 @@
                         <span class="fw-bold fs-4" style="color: #d4af37;">₹ <%= Math.round(grandTotal).toLocaleString('en-IN') %></span>
                     </div>
 
-                    <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold py-3 shadow-sm" style="background-color: #2c3e50; border: none;">
+                    <button type="submit" id="submitBtn" class="btn btn-dark w-100 rounded-pill fw-bold py-3 shadow-sm" style="background-color: #2c3e50; border: none;">
                         Place Order <i class="fas fa-arrow-right ms-2"></i>
                     </button>
-                    
                     <p class="text-muted small text-center mt-3 mb-0"><i class="fas fa-shield-alt me-1"></i> Safe & Secure Payments</p>
                 </div>
             </div>
@@ -106,4 +151,32 @@
     </form>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mobileInput = document.getElementById("mobileInput");
+        const mobileError = document.getElementById("mobileError");
+        const submitBtn = document.getElementById("submitBtn");
+
+        if(mobileInput) {
+            mobileInput.addEventListener("input", function() {
+                // 1. सिर्फ नंबर्स अलाउड हैं, बाकी सब हटा दो
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+                // 2. अगर नंबर 10 से कम हैं, तो एरर दिखाओ और बटन बंद कर दो
+                if (this.value.length > 0 && this.value.length < 10) {
+                    mobileError.classList.remove("d-none");
+                    this.classList.add("border", "border-danger");
+                    this.classList.remove("border-0");
+                    submitBtn.disabled = true;
+                } else {
+                    // 3. अगर 10 नंबर पूरे हो गए, तो एरर हटाओ और बटन चालू कर दो
+                    mobileError.classList.add("d-none");
+                    this.classList.remove("border", "border-danger");
+                    this.classList.add("border-0");
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+    });
+</script>
 <%- include('partials/footer') %>
