@@ -1168,7 +1168,7 @@ app.get('/api/site-data', async (req, res) => {
         res.status(500).json({ error: "Data not available" });
     }
 });
-// === API FOR BOTPRESS CHATBOT (UPDATED FOR CAROUSEL CARDS) ===
+// === API FOR BOTPRESS CHATBOT (OLD MARKDOWN WALA - BEST FOR NOW) ===
 app.get('/api/bot/products', async (req, res) => {
     try {
         const query = req.query.q || ''; 
@@ -1180,22 +1180,23 @@ app.get('/api/bot/products', async (req, res) => {
             ]
         }).limit(5);
 
-        // Agar koi product na mile, toh Botpress ko empty array [] bhejo
         if(products.length === 0) {
-             return res.json([]); 
+             return res.send("Sorry, no products found matching your request. 😔");
         }
 
-        // Card ke format me data set karo (JSON Array)
-       const botData = products.map(p => ({
-    name: p.name,
-    image: p.imagePath ? `https://sm-jewellers.onrender.com${p.imagePath}` : "https://sm-jewellers.onrender.com/default-image.jpg", 
-    url: `https://sm-jewellers.onrender.com/product/${p._id}`
-}));
+        // जादू यहाँ है: हम एक सुंदर मैसेज बना रहे हैं!
+        let markdownMessage = `Here are some amazing options for you:\n\n`;
+        
+        products.forEach(p => {
+            markdownMessage += `**${p.name}**\n`; 
+            markdownMessage += `![${p.name}](https://sm-jewellers.onrender.com${p.imagePath})\n`; 
+            markdownMessage += `👉 [Click here to Buy Now](https://sm-jewellers.onrender.com/product/${p._id})\n\n`; 
+            markdownMessage += `--- \n\n`; 
+        });
 
-        // Pura data ek sath Botpress ko bhej do
-        res.json(botData); 
+        res.send(markdownMessage); 
     } catch (err) {
-        res.status(500).json({ error: "Server Error" });
+        res.status(500).send("Sorry, I am facing some technical issues right now. 🛠️");
     }
 });
 // --- SERVER START ---
