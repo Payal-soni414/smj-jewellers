@@ -1186,11 +1186,11 @@ app.get('/api/bot/products', async (req, res) => {
         }
 
         // Card ke format me data set karo (JSON Array)
-        const botData = products.map(p => ({
-            name: p.name,
-            image: `https://sm-jewellers.onrender.com${p.imagePath}`,
-            url: `https://sm-jewellers.onrender.com/product/${p._id}`
-        }));
+       const botData = products.map(p => ({
+    name: p.name,
+    image: p.imagePath ? `https://sm-jewellers.onrender.com${p.imagePath}` : "https://sm-jewellers.onrender.com/default-image.jpg", 
+    url: `https://sm-jewellers.onrender.com/product/${p._id}`
+}));
 
         // Pura data ek sath Botpress ko bhej do
         res.json(botData); 
